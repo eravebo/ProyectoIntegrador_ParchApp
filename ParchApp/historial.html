@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Reservas - ParchApp</title>
+    <style>
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+            --color-success: #27ae60;
+            --color-warning: #f39c12;
+            --color-error: #e74c3c;
+            --color-info: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--color-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .logo span {
+            color: var(--color-accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-login {
+            background-color: transparent;
+            color: var(--color-light);
+            border: 1px solid var(--color-light);
+        }
+        
+        .btn-register {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--color-accent);
+        }
+        
+        .page-title {
+            color: var(--color-primary);
+            font-size: 2rem;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--color-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        /* Reservations Grid */
+        .reservations-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .reservation-card {
+            background: var(--color-light);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .reservation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .reservation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .reservation-title {
+            font-size: 1.3rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .reservation-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-completed {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--color-success);
+        }
+        
+        .status-upcoming {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--color-info);
+        }
+        
+        .status-cancelled {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--color-error);
+        }
+        
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--color-warning);
+        }
+        
+        .reservation-body {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .reservation-image {
+            width: 100%;
+            height: 120px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+        
+        .reservation-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--color-primary);
+            min-width: 100px;
+        }
+        
+        .detail-value {
+            color: #666;
+        }
+        
+        .reservation-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            padding: 2rem 2rem 1rem;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+            font-size: 1.1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .reservation-body {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .reservation-image {
+                height: 200px;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                justify-content: center;
+            }
+            
+            .reservation-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#destinos">Destinos</a></li>
+                <li><a href="historial.html" class="active">Mi Historial</a></li>
+                <li><a href="index.html#contacto">Contacto</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Mi Historial de Reservas</h1>
+                <p class="page-subtitle">Revisa todos tus viajes realizados y programados</p>
+            </div>
+            <a href="index.html" class="btn-secondary">Explorar Nuevos Tours</a>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="totalReservations">0</div>
+                <div class="stat-label">Total de Reservas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedTrips">0</div>
+                <div class="stat-label">Viajes Completados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="upcomingTrips">0</div>
+                <div class="stat-label">Próximos Viajes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalSpent">$0</div>
+                <div class="stat-label">Total Invertido</div>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="completed">Completados</button>
+            <button class="filter-btn" data-filter="upcoming">Próximos</button>
+            <button class="filter-btn" data-filter="cancelled">Cancelados</button>
+            <button class="filter-btn" data-filter="pending">Pendientes</button>
+        </div>
+        
+        <!-- Reservations Grid -->
+        <div class="reservations-grid" id="reservationsContainer">
+            <!-- Las reservas se cargarán aquí dinámicamente -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#destinos">Destinos</a></li>
+                    <li><a href="historial.html">Mi Historial</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Datos de ejemplo para el historial de reservas
+        const reservationsData = [
+            {
+                id: "RES-001",
+                tourId: "guatape",
+                tourName: "Guatapé - Tour Completo",
+                image: "https://cincohorizontes.com/wp-content/uploads/2021/10/La-Piedra-del-Penon-de-Guatape-al-fondo.jpg",
+                date: "2024-03-15",
+                travelers: 2,
+                price: 240000,
+                status: "completed",
+                destination: "Guatapé, Antioquia",
+                duration: "1 día",
+                guide: "Carlos Rodríguez"
+            },
+            {
+                id: "RES-002",
+                tourId: "jardin",
+                tourName: "Jardín - Experiencia Cafetera",
+                image: "https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg",
+                date: "2024-04-22",
+                travelers: 4,
+                price: 600000,
+                status: "completed",
+                destination: "Jardín, Antioquia",
+                duration: "2 días",
+                guide: "María González"
+            },
+            {
+                id: "RES-003",
+                tourId: "rio-claro",
+                tourName: "Río Claro - Aventura Extrema",
+                image: "https://www.viajescomfama.com/portals/1139/Images/rio-claro/viajescomfama-antioquia-viva-rio-claro.jpg",
+                date: "2024-06-10",
+                travelers: 3,
+                price: 540000,
+                status: "upcoming",
+                destination: "Río Claro, Antioquia",
+                duration: "3 días",
+                guide: "Andrés López"
+            },
+            {
+                id: "RES-004",
+                tourId: "santa-fe",
+                tourName: "Santa Fe - Tour Histórico",
+                image: "https://puebliandoporantioquia.com.co/wp-content/uploads/2019/07/Santa-Fe-de-Antioquia-a9.jpg",
+                date: "2024-02-08",
+                travelers: 1,
+                price: 100000,
+                status: "completed",
+                destination: "Santa Fe de Antioquia",
+                duration: "1 día",
+                guide: "Laura Martínez"
+            },
+            {
+                id: "RES-005",
+                tourId: "cerro-tusa",
+                tourName: "Cerro Tusa - Senderismo",
+                image: "https://www.medellinadvisors.com/wp-content/uploads/2019/05/cerro-tusa-is-a-natural-sanctuary-of-medellin.jpg",
+                date: "2024-07-18",
+                travelers: 2,
+                price: 140000,
+                status: "pending",
+                destination: "Cerro Tusa, Antioquia",
+                duration: "1 día",
+                guide: "Pedro Sánchez"
+            },
+            {
+                id: "RES-006",
+                tourId: "parque-arvi",
+                tourName: "Parque Arví - Ecoturismo",
+                image: "https://blog.redbus.co/wp-content/uploads/2024/10/Proyecto-nuevo-2025-02-27T112200.640.jpg",
+                date: "2024-01-12",
+                travelers: 2,
+                price: 160000,
+                status: "cancelled",
+                destination: "Parque Arví, Medellín",
+                duration: "1 día",
+                guide: "Ana Torres"
+            }
+        ];
+
+        // Mapeo de estados a texto y clases
+        const statusMap = {
+            "completed": { text: "Completado", class: "status-completed" },
+            "upcoming": { text: "Próximo", class: "status-upcoming" },
+            "cancelled": { text: "Cancelado", class: "status-cancelled" },
+            "pending": { text: "Pendiente", class: "status-pending" }
+        };
+
+        // Elementos del DOM
+        const reservationsContainer = document.getElementById('reservationsContainer');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const totalReservationsElement = document.getElementById('totalReservations');
+        const completedTripsElement = document.getElementById('completedTrips');
+        const upcomingTripsElement = document.getElementById('upcomingTrips');
+        const totalSpentElement = document.getElementById('totalSpent');
+
+        let filteredReservations = [...reservationsData];
+
+        // Función para formatear fecha
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('es-CO', options);
+        }
+
+        // Función para formatear precio
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Función para calcular estadísticas
+        function calculateStats() {
+            const totalReservations = reservationsData.length;
+            const completedTrips = reservationsData.filter(r => r.status === 'completed').length;
+            const upcomingTrips = reservationsData.filter(r => r.status === 'upcoming').length;
+            const totalSpent = reservationsData
+                .filter(r => r.status === 'completed')
+                .reduce((sum, reservation) => sum + reservation.price, 0);
+
+            totalReservationsElement.textContent = totalReservations;
+            completedTripsElement.textContent = completedTrips;
+            upcomingTripsElement.textContent = upcomingTrips;
+            totalSpentElement.textContent = formatPrice(totalSpent);
+        }
+
+        // Función para renderizar reservas
+        function renderReservations() {
+            reservationsContainer.innerHTML = '';
+
+            if (filteredReservations.length === 0) {
+                reservationsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No hay reservas que coincidan con tu filtro</h3>
+                        <p>¡Explora nuestros tours y comienza tu próxima aventura!</p>
+                        <a href="index.html" class="btn-secondary" style="margin-top: 1rem; display: inline-block;">Descubrir Tours</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Ordenar reservas por fecha (más recientes primero)
+            const sortedReservations = [...filteredReservations].sort((a, b) => 
+                new Date(b.date) - new Date(a.date)
+            );
+
+            sortedReservations.forEach(reservation => {
+                const status = statusMap[reservation.status];
+                
+                const reservationCard = document.createElement('div');
+                reservationCard.className = 'reservation-card';
+                reservationCard.innerHTML = `
+                    <div class="reservation-header">
+                        <div>
+                            <h3 class="reservation-title">${reservation.tourName}</h3>
+                            <div class="reservation-date">${formatDate(reservation.date)}</div>
+                        </div>
+                        <div class="status-badge ${status.class}">${status.text}</div>
+                    </div>
+                    <div class="reservation-body">
+                        <img src="${reservation.image}" alt="${reservation.tourName}" class="reservation-image">
+                        <div class="reservation-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Destino:</span>
+                                <span class="detail-value">${reservation.destination}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Duración:</span>
+                                <span class="detail-value">${reservation.duration}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Viajeros:</span>
+                                <span class="detail-value">${reservation.travelers} persona${reservation.travelers > 1 ? 's' : ''}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Guía:</span>
+                                <span class="detail-value">${reservation.guide}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Total:</span>
+                                <span class="detail-value" style="font-weight: 600; color: var(--color-secondary);">${formatPrice(reservation.price)}</span>
+                            </div>
+                        </div>
+                        <div class="reservation-actions">
+                            <button class="btn-secondary" onclick="viewReservationDetails('${reservation.id}')">
+                                Ver Detalles
+                            </button>
+                            ${reservation.status === 'completed' ? `
+                                <button class="btn-outline" onclick="bookAgain('${reservation.tourId}')">
+                                    Reservar Nuevamente
+                                </button>
+                            ` : ''}
+                            ${reservation.status === 'upcoming' ? `
+                                <button class="btn-outline" onclick="cancelReservation('${reservation.id}')">
+                                    Cancelar Reserva
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                reservationsContainer.appendChild(reservationCard);
+            });
+        }
+
+        // Funciones de acción
+        function viewReservationDetails(reservationId) {
+            alert(`Mostrando detalles de la reserva: ${reservationId}\n\nEn una implementación real, esto mostraría información detallada de la reserva.`);
+        }
+
+        function bookAgain(tourId) {
+            alert(`Redirigiendo a la página del tour: ${tourId}\n\nEn una implementación real, esto llevaría al usuario a la página del tour para reservar nuevamente.`);
+            // window.location.href = `tour.html?id=${tourId}`;
+        }
+
+        function cancelReservation(reservationId) {
+            if (confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
+                alert(`Reserva ${reservationId} cancelada exitosamente.\n\nEn una implementación real, esto actualizaría el estado en la base de datos.`);
+                // Aquí iría la lógica para cancelar la reserva
+            }
+        }
+
+        // Filtrado
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remover clase active de todos los botones
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Agregar clase active al botón clickeado
+                button.classList.add('active');
+                
+                const filter = button.getAttribute('data-filter');
+                
+                if (filter === 'all') {
+                    filteredReservations = [...reservationsData];
+                } else {
+                    filteredReservations = reservationsData.filter(reservation => 
+                        reservation.status === filter
+                    );
+                }
+                
+                renderReservations();
+            });
+        });
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateStats();
+            renderReservations();
+        });
+    </script>
+</body>
+</html>

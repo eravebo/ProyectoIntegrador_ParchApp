@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour a Jardín - ParchApp</title>
+    <style>
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+            --color-error: #e74c3c;
+            --color-success: #27ae60;
+            --color-warning: #f39c12;
+            --color-facebook: #1877f2;
+            --color-twitter: #1da1f2;
+            --color-instagram: #e4405f;
+            --color-whatsapp: #25d366;
+            --color-linkedin: #0077b5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--color-dark);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+
+        .logo-container {
+            padding: 0.5rem 0;
+        }
+        
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cart-icon {
+            position: relative;
+            margin-left: 2rem;
+            cursor: pointer;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-login {
+            background-color: transparent;
+            color: var(--color-light);
+            border: 1px solid var(--color-light);
+        }
+        
+        .btn-register {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Breadcrumb */
+        .breadcrumb {
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .breadcrumb a {
+            color: var(--color-secondary);
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Tour Header */
+        .tour-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .tour-gallery {
+            position: relative;
+        }
+        
+        .main-image {
+            width: 100%;
+            height: 400px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+        
+        .image-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .thumbnail {
+            width: 100%;
+            height: 80px;
+            border-radius: 6px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .thumbnail:hover {
+            opacity: 0.8;
+        }
+        
+        .tour-info {
+            background: var(--color-light);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .tour-title {
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .tour-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tour-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-accent);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        .tour-difficulty {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .difficulty-easy {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--color-success);
+        }
+        
+        .difficulty-medium {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--color-warning);
+        }
+        
+        .tour-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .tour-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--color-primary);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+        }
+        
+        /* Share Section */
+        .share-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--color-light);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .share-title {
+            font-size: 1.2rem;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .share-facebook {
+            background-color: var(--color-facebook);
+        }
+        
+        .share-twitter {
+            background-color: var(--color-twitter);
+        }
+        
+        .share-instagram {
+            background-color: var(--color-instagram);
+        }
+        
+        .share-whatsapp {
+            background-color: var(--color-whatsapp);
+        }
+        
+        .share-linkedin {
+            background-color: var(--color-linkedin);
+        }
+        
+        .share-copy {
+            background-color: var(--color-primary);
+        }
+        
+        /* Tour Details */
+        .tour-details {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .details-content {
+            background: var(--color-light);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-accent);
+        }
+        
+        .description {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .highlights {
+            margin-bottom: 2rem;
+        }
+        
+        .highlight-list {
+            list-style: none;
+            display: grid;
+            gap: 0.8rem;
+        }
+        
+        .highlight-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .highlight-list li::before {
+            content: "✓";
+            color: var(--color-success);
+            font-weight: bold;
+        }
+        
+        .itinerary {
+            margin-bottom: 2rem;
+        }
+        
+        .itinerary-item {
+            padding: 1rem;
+            border-left: 3px solid var(--color-secondary);
+            background: #f8f9fa;
+            margin-bottom: 1rem;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .itinerary-time {
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Sidebar Info */
+        .sidebar-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .info-card {
+            background: var(--color-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .info-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        /* Reviews Section */
+        .reviews-section {
+            background: var(--color-light);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+        
+        .review-card {
+            padding: 1.5rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .reviewer-name {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        
+        .review-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .review-rating {
+            color: var(--color-warning);
+            font-weight: 600;
+        }
+        
+        .review-content {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        /* Related Tours */
+        .related-tours {
+            margin-bottom: 3rem;
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-card {
+            background: var(--color-light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .related-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .related-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .related-content {
+            padding: 1rem;
+        }
+        
+        .related-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-price {
+            font-weight: 600;
+            color: var(--color-secondary);
+        }
+        
+        /* Alert Styles */
+        .alert {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            background-color: var(--color-success);
+            color: var(--color-light);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            max-width: 300px;
+        }
+        
+        .alert.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            padding: 3rem 2rem 1rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+            color: #aaa;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .tour-header {
+                grid-template-columns: 1fr;
+            }
+            
+            .tour-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .tour-info {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+            }
+            
+            .share-btn {
+                min-width: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .tour-title {
+                font-size: 1.5rem;
+            }
+            
+            .tour-meta {
+                flex-direction: column;
+                align-items: start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#destinos">Destinos</a></li>
+                <li><a href="historial.html">Mi Historial</a></li>
+                <li><a href="index.html#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Alert Container -->
+    <div id="alertContainer" class="alert"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Inicio</a> / 
+            <a href="index.html#destinos">Destinos</a> / 
+            <span>Tour a Jardín</span>
+        </div>
+
+        <!-- Tour Header -->
+        <div class="tour-header">
+            <div class="tour-gallery">
+                <img src="https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg" 
+                     alt="Jardín - Pueblo Mágico" class="main-image" id="mainImage">
+                <div class="image-thumbnails">
+                    <img src="https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg" 
+                         alt="Vista 1" class="thumbnail" onclick="changeImage(this.src)">
+                    <img src="https://images.unsplash.com/photo-1580234811497-9df7fd2f357e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Vista 2" class="thumbnail" onclick="changeImage(this.src)">
+                    <img src="https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Vista 3" class="thumbnail" onclick="changeImage(this.src)">
+                    <img src="https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Vista 4" class="thumbnail" onclick="changeImage(this.src)">
+                </div>
+            </div>
+
+            <div class="tour-info">
+                <h1 class="tour-title">Jardín - Experiencia Cafetera</h1>
+                <div class="tour-meta">
+                    <div class="tour-rating">
+                        <span>⭐ 4.9</span>
+                        <span>(89 reseñas)</span>
+                    </div>
+                    <div class="tour-difficulty difficulty-easy">Fácil</div>
+                </div>
+                
+                <div class="tour-price">$150.000</div>
+                <p style="color: #666; margin-bottom: 1.5rem;">por persona - 2 días</p>
+                
+                <div class="tour-actions">
+                    <button class="btn btn-primary" onclick="addToCart('jardin')">
+                        🛒 Agregar al Carrito
+                    </button>
+                    <button class="btn btn-outline" onclick="window.open('carrito.html', '_blank')">
+                        Reservar Ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share Section -->
+        <div class="share-section">
+            <h3 class="share-title">📤 Compartir este Tour</h3>
+            <div class="share-buttons">
+                <button class="share-btn share-facebook" onclick="shareOnFacebook()">
+                    📘 Facebook
+                </button>
+                <button class="share-btn share-twitter" onclick="shareOnTwitter()">
+                    🐦 Twitter
+                </button>
+                <button class="share-btn share-instagram" onclick="shareOnInstagram()">
+                    📷 Instagram
+                </button>
+                <button class="share-btn share-whatsapp" onclick="shareOnWhatsApp()">
+                    💚 WhatsApp
+                </button>
+                <button class="share-btn share-linkedin" onclick="shareOnLinkedIn()">
+                    💼 LinkedIn
+                </button>
+                <button class="share-btn share-copy" onclick="copyTourLink()">
+                    📋 Copiar Enlace
+                </button>
+            </div>
+        </div>
+
+        <!-- Tour Details -->
+        <div class="tour-details">
+            <div class="details-content">
+                <h2 class="section-title">Descripción del Tour</h2>
+                <div class="description">
+                    <p>Sumérgete en la magia de Jardín, uno de los pueblos más encantadores de Antioquia. 
+                    Este tour de dos días te llevará a través de paisajes cafeteros espectaculares, cascadas 
+                    cristalinas y la auténtica cultura paisa.</p>
+                    
+                    <p>Vive la experiencia completa del proceso del café, desde el cultivo hasta la taza, 
+                    en fincas tradicionales. Disfruta de la arquitectura colonial bien conservada, explora 
+                    cuevas naturales y maravíllate con la biodiversidad de esta región única.</p>
+                </div>
+
+                <div class="highlights">
+                    <h3 class="section-title">Lo más destacado</h3>
+                    <ul class="highlight-list">
+                        <li>Tour completo por finca cafetera tradicional</li>
+                        <li>Visita a la Cueva del Esplendor y su cascada</li>
+                        <li>Recorrido por el pueblo y su arquitectura colonial</li>
+                        <li>Degustación de café premium de la región</li>
+                        <li>Alojamiento en hotel boutique incluido</li>
+                        <li>Alimentación completa (desayuno, almuerzo, cena)</li>
+                        <li>Transporte desde Medellín ida y vuelta</li>
+                    </ul>
+                </div>
+
+                <div class="itinerary">
+                    <h3 class="section-title">Itinerario - 2 Días</h3>
+                    
+                    <h4 style="color: var(--color-primary); margin: 1.5rem 0 1rem 0;">Día 1</h4>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 7:00 AM - Salida desde Medellín</div>
+                        <p>Viaje panorámico hacia Jardín con paradas fotográficas</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 11:00 AM - Llegada y check-in</div>
+                        <p>Instalación en hotel boutique y almuerzo típico</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 2:00 PM - Recorrido por el pueblo</div>
+                        <p>Exploración de la plaza principal y arquitectura colonial</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 6:00 PM - Cena y noche libre</div>
+                        <p>Cena en restaurante local y tiempo para explorar</p>
+                    </div>
+
+                    <h4 style="color: var(--color-primary); margin: 1.5rem 0 1rem 0;">Día 2</h4>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 8:00 AM - Desayuno y finca cafetera</div>
+                        <p>Tour completo por finca cafetera con degustación</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 1:00 PM - Cueva del Esplendor</div>
+                        <p>Aventura hacia la cueva y su impresionante cascada</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 4:00 PM - Tiempo libre y compras</div>
+                        <p>Oportunidad para comprar café y artesanías locales</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 6:00 PM - Regreso a Medellín</div>
+                        <p>Fin del tour y retorno al punto de partida</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-info">
+                <div class="info-card">
+                    <h3 class="info-title">📅 Información del Tour</h3>
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">Duración:</span>
+                            <span class="info-value">2 días / 1 noche</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Grupo máximo:</span>
+                            <span class="info-value">12 personas</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Idiomas:</span>
+                            <span class="info-value">Español, Inglés</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Incluye:</span>
+                            <span class="info-value">Alojamiento, alimentación completa</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Edad mínima:</span>
+                            <span class="info-value">10 años</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="info-title">📍 Punto de Encuentro</h3>
+                    <p style="margin-bottom: 1rem;">Terminal del Sur, Medellín</p>
+                    <button class="btn btn-outline" style="width: 100%;" onclick="openMap()">
+                        🗺️ Ver en Maps
+                    </button>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="info-title">📞 Contacto</h3>
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">WhatsApp:</span>
+                            <span class="info-value">+57 300 123 4567</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">tours@parchapp.com</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Horario:</span>
+                            <span class="info-value">Lun-Dom: 6AM-10PM</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <h2 class="section-title">🌟 Reseñas de Viajeros</h2>
+            
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face" 
+                             alt="Ana Martínez" class="reviewer-avatar">
+                        <div>
+                            <div class="reviewer-name">Ana Martínez</div>
+                            <div class="review-date">22 Abril, 2024</div>
+                        </div>
+                    </div>
+                    <div class="review-rating">⭐ 5.0</div>
+                </div>
+                <div class="review-content">
+                    "Jardín es simplemente mágico. El tour por la finca cafetera fue educativo y delicioso. 
+                    La Cueva del Esplendor es impresionante. ¡Volvería sin dudarlo!"
+                </div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face" 
+                             alt="David López" class="reviewer-avatar">
+                        <div>
+                            <div class="reviewer-name">David López</div>
+                            <div class="review-date">15 Marzo, 2024</div>
+                        </div>
+                    </div>
+                    <div class="review-rating">⭐ 4.8</div>
+                </div>
+                <div class="review-content">
+                    "Excelente organización. El hotel boutique era encantador y la comida deliciosa. 
+                    Solo sugeriría más tiempo libre para explorar el pueblo por cuenta propia."
+                </div>
+            </div>
+
+            <button class="btn btn-outline" style="width: 100%;" onclick="showAllReviews()">
+                Ver todas las 89 reseñas
+            </button>
+        </div>
+
+        <!-- Related Tours -->
+        <div class="related-tours">
+            <h2 class="section-title">🚀 Tours Relacionados</h2>
+            <div class="related-grid">
+                <div class="related-card" onclick="window.location.href='guatape.html'">
+                    <img src="https://cincohorizontes.com/wp-content/uploads/2021/10/La-Piedra-del-Penon-de-Guatape-al-fondo.jpg" 
+                         alt="Guatapé" class="related-image">
+                    <div class="related-content">
+                        <h3 class="related-title">Guatapé - Piedra del Peñol</h3>
+                        <div class="related-price">$120.000</div>
+                    </div>
+                </div>
+                
+                <div class="related-card" onclick="window.location.href='santafe.html'">
+                    <img src="https://puebliandoporantioquia.com.co/wp-content/uploads/2019/07/Santa-Fe-de-Antioquia-a9.jpg" 
+                         alt="Santa Fe" class="related-image">
+                    <div class="related-content">
+                        <h3 class="related-title">Santa Fe de Antioquia</h3>
+                        <div class="related-price">$100.000</div>
+                    </div>
+                </div>
+                
+                <div class="related-card" onclick="window.location.href='parquearvi.html'">
+                    <img src="https://blog.redbus.co/wp-content/uploads/2024/10/Proyecto-nuevo-2025-02-27T112200.640.jpg" 
+                         alt="Parque Arví" class="related-image">
+                    <div class="related-content">
+                        <h3 class="related-title">Parque Arví - Ecoturismo</h3>
+                        <div class="related-price">$80.000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#destinos">Destinos</a></li>
+                    <li><a href="historial.html">Mi Historial</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Datos del tour para compartir
+        const tourData = {
+            title: "Jardín - Experiencia Cafetera",
+            description: "Sumérgete en la magia de Jardín, uno de los pueblos más encantadores de Antioquia. Tour de 2 días por paisajes cafeteros espectaculares.",
+            price: "$150.000",
+            image: "https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg",
+            url: window.location.href
+        };
+
+        // Función para mostrar alertas
+        function showAlert(message) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.textContent = message;
+            alertContainer.classList.add('show');
+            
+            setTimeout(() => {
+                alertContainer.classList.remove('show');
+            }, 3000);
+        }
+
+        // Función para cambiar imagen principal
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+
+        // Función para agregar al carrito
+        function addToCart(tourId) {
+            let cart = JSON.parse(localStorage.getItem('parchapp_cart')) || {};
+            cart[tourId] = (cart[tourId] || 0) + 1;
+            localStorage.setItem('parchapp_cart', JSON.stringify(cart));
+            
+            // Actualizar contador
+            const cartCount = document.getElementById('cartCount');
+            const totalItems = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            showAlert('✅ Tour agregado al carrito');
+        }
+
+        // Funciones para compartir
+        function shareOnFacebook() {
+            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(tourData.url)}&quote=${encodeURIComponent(tourData.title + ' - ' + tourData.description)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+            showAlert('Compartiendo en Facebook...');
+        }
+
+        function shareOnTwitter() {
+            const shareText = `🏞️ ${tourData.title} - ${tourData.description} ${tourData.price} por persona (2 días)`;
+            const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(tourData.url)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+            showAlert('Compartiendo en Twitter...');
+        }
+
+        function shareOnInstagram() {
+            showAlert('📷 Para compartir en Instagram, copia el enlace y pégalo en tu historia o publicación');
+            copyTourLink();
+        }
+
+        function shareOnWhatsApp() {
+            const shareText = `*${tourData.title}*%0A%0A${tourData.description}%0A%0A💰 Precio: ${tourData.price} (2 días)%0A%0A🔗 ${tourData.url}`;
+            const shareUrl = `https://wa.me/?text=${shareText}`;
+            window.open(shareUrl, '_blank', 'width=600,height=700');
+            showAlert('Compartiendo en WhatsApp...');
+        }
+
+        function shareOnLinkedIn() {
+            const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(tourData.url)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=600');
+            showAlert('Compartiendo en LinkedIn...');
+        }
+
+        function copyTourLink() {
+            navigator.clipboard.writeText(tourData.url).then(() => {
+                showAlert('✅ Enlace copiado al portapapeles');
+            }).catch(() => {
+                const tempInput = document.createElement('input');
+                tempInput.value = tourData.url;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showAlert('✅ Enlace copiado al portapapeles');
+            });
+        }
+
+        // Otras funciones
+        function openMap() {
+            const address = "Terminal del Sur, Medellín, Antioquia";
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+            window.open(mapsUrl, '_blank');
+        }
+
+        function showAllReviews() {
+            alert('En una implementación completa, esto mostraría todas las reseñas en un modal o página separada.');
+        }
+
+        // Inicializar contador del carrito
+        document.addEventListener('DOMContentLoaded', function() {
+            const cart = JSON.parse(localStorage.getItem('parchapp_cart')) || {};
+            const totalItems = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicación de Planes - ParchApp Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/stylesAdmin.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="../imagenes/logo.png" alt="ParchApp" class="logo">
+        </div>
+        <div class="admin-nav">
+            <div class="nav-links">
+                <a href="admin.html" class="nav-link">Dashboard</a>
+                <a href="comparacion_metricas.html" class="nav-link">Comparación & Métricas</a>
+                <a href="gestion_users.html" class="nav-link">Gestor de usuarios</a>
+                <a href="notificaciones_admin.html" class="nav-link notification-link">
+                    Notificaciones
+                    <span class="notification-badge" id="notificationCount">3</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="section-title">Publicación de Planes</h1>
+
+        <div class="module-section">
+            <h2>Crear nuevo plan turístico</h2>
+            <form id="planForm" class="plan-form" enctype="multipart/form-data">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="agencyName">Agencia</label>
+                        <input type="text" id="agencyName" name="agencyName" placeholder="Nombre de la agencia">
+                    </div>
+                    <div class="form-group">
+                        <label for="planTitle">Nombre del plan</label>
+                        <input type="text" id="planTitle" name="planTitle" placeholder="Ej: Tour Guatapé completo">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="destination">Destino</label>
+                        <select id="destination" name="destination">
+                            <option value="">Selecciona un destino</option>
+                            <option value="Guatapé">Guatapé</option>
+                            <option value="Jardín">Jardín</option>
+                            <option value="Santa Fe de Antioquia">Santa Fe de Antioquia</option>
+                            <option value="Medellín">Medellín</option>
+                            <option value="Parque Arví">Parque Arví</option>
+                            <option value="Río Claro">Río Claro</option>
+                            <option value="San Jerónimo">San Jerónimo</option>
+                            <option value="Cerro Tusa">Cerro Tusa</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Valor (COP)</label>
+                        <input type="number" id="price" name="price" min="0" step="1000" placeholder="Ej: 150000">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="availability">Disponibilidad (cupos)</label>
+                        <input type="number" id="availability" name="availability" min="1" step="1" placeholder="Ej: 10">
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Imagen del tour</label>
+                        <input type="file" id="image" name="image" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descripción del tour</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Describe brevemente el tour, qué incluye, duración, etc."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">Guardar plan</button>
+            </form>
+        </div>
+
+        <div class="module-section">
+            <h2>Planes publicados por agencias</h2>
+            <div class="cards-container" id="plansContainer">
+                <!-- Las tarjetas de planes se generarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/publicar_planes.js"></script>
+</body>
+</html>
+

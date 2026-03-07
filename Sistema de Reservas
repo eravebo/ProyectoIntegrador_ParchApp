@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ParchApp - Descubre Antioquia</title>
+
+    <style>
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--color-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing:antialiased;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .navbar { display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto; }
+        .logo { font-size:1.6rem; font-weight:700; }
+        .logo span { color: var(--color-accent); }
+        .nav-links { display:flex; list-style:none; gap:1rem; align-items:center; }
+        .nav-links a { color: var(--color-light); text-decoration:none; }
+        
+        .auth-buttons-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .auth-buttons { 
+            display:flex; 
+            gap:0.5rem; 
+        }
+
+        .btn { padding:0.4rem 0.8rem; border-radius:4px; border:none; cursor:pointer; }
+        .btn-login { background:transparent; color:var(--color-light); border:1px solid var(--color-light); }
+        .btn-register { background:var(--color-secondary); color:var(--color-light); }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            color: var(--color-light);
+            cursor: pointer;
+            text-decoration: none;
+            padding: 0 0.5rem;
+            position: relative; /* CLAVE para posicionar el badge */
+        }
+
+
+        /* HERO - CARRUSEL STYLES */
+        .hero {
+            position: relative;
+            height: 400px; 
+            overflow: hidden;
+            color: var(--color-light);
+            text-align: center;
+        }
+        
+        /* SLIDER Styles */
+        .slider-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.6s ease-in-out;
+        }
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); 
+        }
+
+        /* CONTENIDO FIJO Y CENTRADO EN EL CARRUSEL */
+        .hero-content {
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            width: 100%; 
+            max-width: 800px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            z-index: 15; 
+            padding: 2.5rem 1rem; 
+        }
+        
+        .hero-content h1 { 
+            font-size: 3rem; 
+            color: var(--color-light);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 0.5rem; 
+        }
+        .hero-content p { 
+            font-size: 1.15rem; 
+            color: var(--color-light); 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            margin-bottom: 1.5rem; 
+        }
+
+        /* Navegación del Slider */
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 20;
+            font-size: 2rem;
+            line-height: 1;
+        }
+        #prevBtn { left: 10px; }
+        #nextBtn { right: 10px; }
+        
+        /* Puntos Indicadores */
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 20;
+        }
+        .dot {
+            height: 10px;
+            width: 10px;
+            margin: 0 5px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .dot.active {
+            background-color: var(--color-light);
+        }
+
+        /* Search Bar (Barra de búsqueda) */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 800px; 
+            margin: 0 auto;
+            background: var(--color-light);
+            border-radius: 8px; 
+            padding: 5px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            width: 490px;
+        }
+        .search-bar input {
+            flex-grow: 1;
+            padding: 10px 15px; 
+            border: none; 
+            background: transparent;
+            font-size: 1rem;
+            border-radius: 6px; 
+          
+        }
+        .search-bar input:focus {
+            outline: none; 
+        }
+        
+        /* ESTILOS DEL BOTÓN "BUSCAR" */
+        .search-bar button {
+            background: var(--color-primary); 
+            color: var(--color-light);
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            flex-shrink: 0; 
+            margin-left: 5px; 
+        }
+        .search-bar button:hover {
+            background: #1a2f00; 
+        }
+
+        /* LAYOUT */
+        .main {
+            max-width: 1200px;
+            margin: 1.8rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Cards Grid (lista de destinos) */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+            gap: 1.6rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--color-light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            transition: transform 0.22s, box-shadow 0.22s;
+            cursor: pointer;
+            position: relative;
+        }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(0,0,0,0.10); }
+        .card-img { width:100%; height:200px; object-fit:cover; display:block; }
+        .card-content { padding: 1rem 1.2rem; }
+        .card-title { color: var(--color-primary); font-size:1.15rem; margin-bottom:0.45rem; }
+        .card-description { color:#666; font-size:0.92rem; margin-bottom:0.9rem; }
+        .card-footer { display:flex; justify-content:space-between; align-items:center; gap:0.6rem; }
+        .card-price { font-weight:700; color:var(--color-secondary); }
+        
+        /* Botón de Añadir al Carrito en la lista */
+        .card .card-btn {
+            background: #38761d; 
+            color: var(--color-light);
+            border: none;
+            padding: 0.5rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .card .card-btn:hover {
+             background: #2b5c17; 
+        }
+        .availability { position:absolute; top:12px; right:12px; background:var(--color-accent); color:var(--color-primary); padding:0.25rem 0.6rem; border-radius:20px; font-weight:600; font-size:0.8rem; }
+
+        /* Reservas section (hidden by default) */
+        .reservar-view {
+            display: none; 
+            opacity: 0;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            transform: translateY(10px);
+        }
+        .reservar-view.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .volver-btn {
+            background: transparent;
+            border: 1px solid #ddd;
+            padding: 0.45rem 0.8rem;
+            border-radius: 8px;
+            cursor:pointer;
+            margin-bottom: 1rem;
+        }
+
+        /* Reservas layout */
+        .contenedor-principal {
+            width: 100%;
+            display: flex;
+            gap: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+        .planes-columna { flex: 2; padding-right: 20px; border-right: 1px solid #eee; }
+        .reserva-columna { flex: 1; min-height: 300px; background-color: #f9f9f9; border-radius: 8px; padding: 20px; box-shadow: inset 0 0 5px rgba(0,0,0,0.03); }
+
+        /* plan-ad styles (list in reservas) */
+        .plan-ad { display:flex; flex-direction:column; border-radius:8px; overflow:hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.06); transition: transform 0.2s; margin-bottom: 14px; }
+        .plan-ad:hover { transform: translateY(-4px); }
+        .ad-imagen { width:100%; height:150px; background-size:cover; background-position:center; display:flex; flex-direction:column; justify-content:flex-end; padding:10px; color:white; text-shadow:1px 1px 3px rgba(0,0,0,0.6); }
+        .ad-titulo h2 { margin:0; font-size:1.25rem; }
+        .ad-info { background:white; color:#333; padding:12px; }
+        .ad-datos-rapidos { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:700; font-size:0.92rem; }
+        .precio-ad { background: var(--color-secondary); color: white; padding: 4px 8px; border-radius: 6px; }
+
+        /* Botón de Reservar en la lista de planes */
+        .btn-accion { 
+            background-color: #38761d; 
+            color: white; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight:700; 
+            width:100%; 
+        }
+        .btn-accion:hover { 
+            background-color: #2b5c17; 
+            transform: scale(1.01); 
+        }
+
+        /* form styles */
+        label { display:block; margin-top:12px; font-weight:700; color:#333; }
+        input[type="text"], input[type="number"], input[type="email"], input[type="date"], textarea {
+            width:100%; padding:10px; margin-top:6px; border:1px solid #ccc; border-radius:6px; background:white;
+        }
+        input[readonly] { background:#eee; font-weight:700; color:#444; }
+        button[type="submit"] {
+            background-color: #38761d; color:white; padding:12px; border:none; border-radius:25px; cursor:pointer; margin-top:14px; width:100%; font-weight:800;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+        }
+        button[type="submit"]:disabled { background:#ccc; cursor:not-allowed; }
+
+        .reserva-preview { padding:12px; margin-bottom:12px; border-radius:6px; background:white; border:1px solid #eee; }
+        #mensajeReserva { margin-top:10px; padding:10px; border-radius:6px; font-weight:700; }
+
+        /* reservas guardadas */
+        .reserva-guardada-item { background:#fff; padding:12px; border-radius:6px; border:1px solid #eee; margin-bottom:10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        
+        /* Botón de eliminar (ajustes para la vista) */
+        .reserva-guardada-item > div:first-child {
+            display: flex;
+            flex-direction: column; 
+            gap: 10px;
+            align-items: flex-start; /* Alineación cambiada para mejor visualización */
+        }
+        .btn-eliminar-reserva { 
+            background: #38761d; /* Rojo para eliminar */
+            color: white; 
+            padding: 8px 10px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            width: 100px; 
+            margin-top: 10px; 
+        }
+
+        /* Estilos del Modal del Carrito */
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            display: none; 
+            align-items: center;
+            justify-content: flex-end; 
+        }
+        .cart-modal.open {
+            display: flex;
+        }
+        .cart-content {
+            background-color: var(--color-light);
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            padding: 20px;
+            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow-y: auto;
+            transform: translateX(100%); 
+            transition: transform 0.3s ease-out;
+        }
+        .cart-modal.open .cart-content {
+            transform: translateX(0);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
+            font-weight: 300;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #666;
+        }
+        .close-btn:hover {
+            color: #333;
+        }
+        #cartItemsContainer {
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            gap: 10px;
+        }
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        .cart-item-details strong {
+            display: block;
+            color: var(--color-primary);
+        }
+        .cart-item-details span {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .remove-item-btn {
+            background: #38761d; 
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .cart-summary {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid var(--color-secondary);
+            font-size: 1.1rem;
+        }
+        #cartTotal {
+            color: var(--color-secondary);
+            font-size: 1.2rem;
+        }
+        .btn-checkout {
+            background: var(--color-secondary);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: 700;
+        }
+        .btn-checkout:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        /* Toast Notification (para el mensaje de añadido al carrito) */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 3000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-weight: 600;
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        
+        /* responsive */
+        @media (max-width: 900px) {
+            .contenedor-principal { flex-direction: column; }
+            .planes-columna { border-right:none; padding-right:0; }
+            .hero-content h1 { font-size: 2rem; }
+        }
+
+        /* small helper */
+        .muted { color:#666; font-size:0.92rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="#" style="color:var(--color-light)">Inicio</a></li>
+                <li><a href="#listView" style="color:var(--color-light)">Destinos</a></li>
+                <li><a href="#" style="color:var(--color-light)">Experiencias</a></li>
+                <li><a href="#" style="color:var(--color-light)">Contacto</a></li>
+            </ul>
+            
+            <div class="auth-buttons-container">
+                <a href="#" class="cart-icon" id="cartIcon">
+                    🛒
+                    <span id="cartCountBadge" style="position: absolute; top: 8px; right: 18px; background: #38761d; color: white; border-radius: 50%; padding: 0 6px; font-size: 0.7rem; display: none; transform: translate(50%, -50%);">0</span>
+                </a>
+                <div class="auth-buttons">
+                    <button class="btn btn-login" onclick="alert('Iniciar Sesión - no implementado')">Iniciar Sesión</button>
+                    <button class="btn btn-register" onclick="alert('Registro - no implementado')">Registrarse</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero" id="heroSlider">
+        <div class="slider-container" id="sliderContainer">
+            <div class="slide" style="background-image: url('https://cincohorizontes.com/wp-content/uploads/2021/10/La-Piedra-del-Penon-de-Guatape-al-fondo.jpg');">
+                <div class="overlay"></div>
+            </div>
+
+            <div class="slide" style="background-image: url('https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg');">
+                <div class="overlay"></div>
+            </div>
+
+            <div class="slide" style="background-image: url('https://puebliandoporantioquia.com.co/wp-content/uploads/2019/07/Santa-Fe-de-Antioquia-a9.jpg');">
+                <div class="overlay"></div>
+            </div>
+
+            <div class="slide" style="background-image: url('https://www.medellinadvisors.com/wp-content/uploads/2019/05/cerro-tusa-is-a-natural-sanctuary-of-medellin.jpg');">
+                <div class="overlay"></div>
+            </div>
+        </div>
+
+        <button id="prevBtn" class="slider-nav">‹</button>
+        <button id="nextBtn" class="slider-nav">›</button>
+
+        <div class="slider-dots" id="sliderDots">
+        </div>
+
+        <div class="hero-content">
+            <h1>Descubre las Maravillas de Antioquia</h1>
+            <p>Explora los diversos paisajes y la vibrante cultura de Antioquia, Colombia.</p>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Buscar destinos..." />
+                <button id="searchButton">Buscar</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="main" id="appMain">
+
+        <section id="listView">
+            <h2 style="margin-bottom:1rem; color:var(--color-primary)">Destinos Populares</h2>
+
+            <div class="cards-container" id="cardsContainer">
+            </div>
+        </section>
+
+        <section id="reservarView" class="reservar-view" aria-hidden="true">
+            <button class="volver-btn" id="btnVolver">← Volver a destinos</button>
+
+            <div class="contenedor-principal">
+                <div class="planes-columna" id="planesContainer">
+                    <h2>Tours</h2>
+                    <div id="listaPlanes">
+                    </div>
+                </div>
+
+                <div class="reserva-columna">
+                    <h3>Formulario de Reserva</h3>
+                    <div id="mensajeReserva"></div>
+                    <div class="reserva-preview" id="reservaPreview">
+                        <p>Selecciona un tour para comenzar la reserva.</p>
+                    </div>
+
+                    <form id="formReserva" style="display:none;">
+                        <label for="tourSeleccionado">Tour a Reservar:</label>
+                        <input type="text" id="tourSeleccionado" readonly />
+
+                        <label for="fecha">Fecha del Tour:</label>
+                        <input type="date" id="fecha" required />
+
+                        <label for="cantidad">Número de Personas:</label>
+                        <input type="number" id="cantidad" min="1" value="1" required />
+
+                        <label for="nombreCliente">Nombre Completo:</label>
+                        <input type="text" id="nombreCliente" placeholder="Ej: Juan Pérez" required />
+
+                        <label for="emailCliente">Correo Electrónico:</label>
+                        <input type="email" id="emailCliente" placeholder="ejemplo@correo.com" required />
+
+                        <label for="totalPagar">Total a Pagar (COP):</label>
+                        <input type="text" id="totalPagar" readonly />
+
+                        <button type="submit">Confirmar Reserva</button>
+                    </form>
+                </div>
+            </div>
+
+            <section style="margin-top:18px;">
+                <h2>Mis Reservas Guardadas</h2>
+                <div id="listaReservas">
+                    <p class="muted">Aquí aparecerán tus reservas confirmadas.</p>
+                </div>
+            </section>
+        </section>
+    </main>
+    
+    <div id="cartModal" class="cart-modal" aria-hidden="true">
+        <div class="cart-content">
+            <button class="close-btn" id="closeCartBtn">&times;</button>
+            <h2>🛒 Mi Carrito de Compras</h2>
+            <div id="cartItemsContainer">
+                <p class="muted">El carrito está vacío.</p>
+            </div>
+            <div class="cart-summary">
+                <p>Total de Tours: <span id="cartItemCount">0</span></p>
+                <p>Total a pagar: <strong id="cartTotal">$ 0 COP</strong></p>
+            </div>
+            <button id="checkoutBtn" class="btn-checkout" disabled>Proceder al Pago</button>
+        </div>
+    </div>
+    
+    <div id="toastNotification" class="toast-notification"></div>
+
+
+    <script>
+        /******************************
+         * Datos (unificados)
+         ******************************/
+        const destinations = [
+            { id: "guatape", name: "Guatapé", description: "Conocido por su impresionante Peñol y sus coloridas casas, ofrece paisajes únicos y actividades acuáticas.", image: "https://cincohorizontes.com/wp-content/uploads/2021/10/La-Piedra-del-Penon-de-Guatape-al-fondo.jpg", price: 120000, category: "naturaleza", availability: "available", maxQuantity: 10, duration: "1 Día" },
+            { id: "jardin", name: "Jardín", description: "Un pueblo mágico con arquitectura colonial, cascadas y cafetales. Perfecto para los amantes de la naturaleza.", image: "https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg", price: 150000, category: "naturaleza", availability: "limited", maxQuantity: 5, duration: "1 Día y 1 Noche" },
+            { id: "santafe", name: "Santa Fe de Antioquia", description: "Ciudad histórica con arquitectura colonial bien conservada y puentes emblemáticos sobre el río Cauca.", image: "https://puebliandoporantioquia.com.co/wp-content/uploads/2019/07/Santa-Fe-de-Antioquia-a9.jpg", price: 100000, category: "cultura", availability: "available", maxQuantity: 8, duration: "1 Día" },
+            { id: "comuna-13", name: "Comuna 13", description: "El arte urbano en su máxima expresión: tour de grafitis, escaleras eléctricas y transformación social.", image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/06/dd/d4/1b.jpg", price: 90000, category: "cultura", availability: "available", maxQuantity: 12, duration: "Medio Día" }
+        ];
+
+        /******************************
+         * Estado y referencias DOM
+         ******************************/
+        let planSeleccionado = null;
+        let reservasRealizadas = JSON.parse(localStorage.getItem('parchapp_reservas') || '[]');
+        
+        let cart = JSON.parse(localStorage.getItem('parchapp_cart')) || {};
+
+        // DOM refs principales
+        const cardsContainer = document.getElementById('cardsContainer');
+        const listView = document.getElementById('listView');
+        const reservarView = document.getElementById('reservarView');
+        const btnVolver = document.getElementById('btnVolver');
+        const searchInput = document.getElementById('searchInput');
+
+        // DOM refs de Reservar view
+        const listaPlanes = document.getElementById('listaPlanes');
+        const reservaPreview = document.getElementById('reservaPreview');
+        const formReserva = document.getElementById('formReserva');
+        const tourSeleccionadoInput = document.getElementById('tourSeleccionado');
+        const cantidadInput = document.getElementById('cantidad');
+        const totalPagarInput = document.getElementById('totalPagar');
+        const mensajeReserva = document.getElementById('mensajeReserva');
+        const listaReservasContainer = document.getElementById('listaReservas');
+        const fechaInput = document.getElementById('fecha');
+
+        // DOM refs del Carrito
+        const cartModal = document.getElementById('cartModal');
+        const cartIcon = document.getElementById('cartIcon');
+        const closeCartBtn = document.getElementById('closeCartBtn');
+        const cartItemsContainer = document.getElementById('cartItemsContainer');
+        const cartItemCount = document.getElementById('cartItemCount');
+        const cartTotal = document.getElementById('cartTotal');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const cartCountBadge = document.getElementById('cartCountBadge'); 
+        const toastNotification = document.getElementById('toastNotification');
+        
+        // Carrusel DOM refs
+        const sliderContainer = document.getElementById('sliderContainer');
+        const sliderDotsContainer = document.getElementById('sliderDots');
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentSlideIndex = 0;
+        let autoSlideInterval;
+        const slideDuration = 3000; // 3 segundos
+
+        /******************************
+         * Utilidades
+         ******************************/
+        const formatter = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        function formatPrice(price) { return formatter.format(price); }
+        
+        /******************************
+         * Carrusel Automático (Slider)
+         ******************************/
+        function updateSlider() {
+            // Calcula el desplazamiento: -100% * índice de la diapositiva actual
+            const offset = -100 * currentSlideIndex;
+            sliderContainer.style.transform = `translateX(${offset}%)`;
+            updateDots();
+        }
+
+        function updateDots() {
+            // Remueve y regenera los puntos para asegurar sincronía
+            sliderDotsContainer.innerHTML = ''; 
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('span');
+                dot.className = `dot ${i === currentSlideIndex ? 'active' : ''}`;
+                dot.setAttribute('data-index', i);
+                dot.addEventListener('click', () => {
+                    goToSlide(i);
+                });
+                sliderDotsContainer.appendChild(dot);
+            }
+        }
+        
+        function goToSlide(index) {
+            // Detiene el temporizador para reiniciar el conteo
+            clearInterval(autoSlideInterval); 
+            
+            currentSlideIndex = index;
+            updateSlider();
+            
+            // Reinicia el temporizador
+            startAutoSlide();
+        }
+
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            updateSlider();
+        }
+
+        function prevSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            updateSlider();
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(nextSlide, slideDuration);
+        }
+
+        function initSlider() {
+            updateSlider(); 
+            startAutoSlide(); 
+            
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                clearInterval(autoSlideInterval);
+                nextSlide();
+                startAutoSlide();
+            });
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                clearInterval(autoSlideInterval);
+                prevSlide();
+                startAutoSlide();
+            });
+        }
+        
+        /******************************
+         * Toast Notification (Mensaje de Carrito)
+         ******************************/
+        function showToast(message) {
+            toastNotification.textContent = message;
+            toastNotification.classList.add('show');
+            setTimeout(() => {
+                toastNotification.classList.remove('show');
+            }, 3000); 
+        }
+
+        /******************************
+         * Funciones del Carrito
+         ******************************/
+
+        function getCartItemsArray() {
+            return Object.keys(cart).map(id => {
+                const tour = destinations.find(d => d.id === id);
+                return tour ? {
+                    id: tour.id,
+                    name: tour.name,
+                    price: tour.price,
+                    quantity: cart[id]
+                } : null;
+            }).filter(item => item !== null);
+        }
+
+        function saveCart() {
+            localStorage.setItem('parchapp_cart', JSON.stringify(cart));
+            updateCartCount();
+            renderCart();
+        }
+
+        function updateCartCount() {
+            const totalItems = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
+            cartCountBadge.textContent = totalItems;
+            cartCountBadge.style.display = totalItems > 0 ? 'inline' : 'none';
+        }
+        
+        /**
+         * Añade un ítem al carrito.
+         * @param {string} tourId - El ID del tour a añadir.
+         */
+        function addToCart(tourId) { 
+            const tour = destinations.find(d => d.id === tourId);
+            
+            if (!tour) return;
+
+            const currentQuantity = cart[tourId] || 0;
+            if (currentQuantity >= tour.maxQuantity) {
+                showToast(`❌ Solo hay ${tour.maxQuantity} cupos disponibles para ${tour.name}`);
+                return;
+            }
+
+            // Agregar al carrito (incrementar cantidad)
+            cart[tourId] = (cart[tourId] || 0) + 1;
+            saveCart(); 
+
+            // Mostrar mensaje de éxito
+            const newQuantity = cart[tourId];
+            const countMessage = newQuantity > 1 ? ` (Llevas ${newQuantity} ítems)` : '';
+            showToast(`✅ ${tour.name} añadido al carrito${countMessage}`);
+        }
+        
+        /**
+         * Elimina un ítem completamente del carrito.
+         * @param {string} itemId - El ID del ítem a eliminar.
+         */
+        function removeFromCart(itemId) {
+            delete cart[itemId];
+            saveCart();
+        }
+
+        function renderCart() {
+            const cartItemsArray = getCartItemsArray();
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            let totalItems = 0;
+
+            if (cartItemsArray.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="muted">El carrito está vacío.</p>';
+                checkoutBtn.disabled = true;
+            } else {
+                cartItemsArray.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    totalItems += item.quantity;
+
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'cart-item';
+                    cartItemEl.innerHTML = `
+                        <div class="cart-item-details">
+                            <strong>${item.name}</strong>
+                            <span>${item.quantity} x ${formatPrice(item.price)} = ${formatPrice(itemTotal)}</span>
+                        </div>
+                        <button class="remove-item-btn" data-id="${item.id}" data-action="remove-all">Quitar</button>
+                    `;
+                    cartItemsContainer.appendChild(cartItemEl);
+                });
+                checkoutBtn.disabled = false;
+            }
+
+            // Actualizar resumen del carrito
+            cartItemCount.textContent = totalItems;
+            cartTotal.textContent = formatPrice(total);
+            
+            // Re-adjuntar listeners para los botones de quitar
+            document.querySelectorAll('.remove-item-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    removeFromCart(id); 
+                });
+            });
+        }
+        
+        /******************************
+         * Render: lista de tarjetas (main)
+         ******************************/
+        function renderCards(filteredDestinations = destinations) {
+            cardsContainer.innerHTML = '';
+            if (filteredDestinations.length === 0) {
+                cardsContainer.innerHTML = '<p>No se encontraron destinos que coincidan con tu búsqueda.</p>';
+                return;
+            }
+            filteredDestinations.forEach(dest => {
+                const card = document.createElement('article');
+                card.className = 'card';
+                card.setAttribute('data-id', dest.id);
+                card.innerHTML = `
+                    ${dest.availability === 'limited' ? `<span class="availability">Últimos cupos</span>` : ''}
+                    <img class="card-img" src="${dest.image}" alt="${dest.name}">
+                    <div class="card-content">
+                        <h3 class="card-title">${dest.name}</h3>
+                        <p class="card-description">${dest.description}</p>
+                        <div class="card-footer">
+                            <div class="card-price">${formatPrice(dest.price)}</div>
+                            <button class="card-btn btn-add-to-cart" data-id="${dest.id}">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+
+            // Agregamos el listener para abrir la vista de reservas al CLIC EN LA TARJETA
+            document.querySelectorAll('.card').forEach(cardEl => {
+                cardEl.addEventListener('click', (ev) => {
+                    // Si el clic viene de un botón "Añadir al Carrito" DENTRO de la tarjeta, NO HACEMOS NADA
+                    if (ev.target.classList.contains('btn-add-to-cart')) {
+                        return;
+                    }
+                    const id = cardEl.getAttribute('data-id');
+                    if (id) {
+                        openReservasFor(id);
+                    }
+                });
+            });
+
+
+            // Agregamos el listener para el botón "Añadir al Carrito"
+            document.querySelectorAll('.btn-add-to-cart').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // SOLUCIÓN: Evita que el clic se propague a la tarjeta
+                    const id = e.target.getAttribute('data-id');
+                    addToCart(id); 
+                });
+            });
+        }
+        
+        /******************************
+         * Funcionalidad de Búsqueda
+         ******************************/
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filtered = destinations.filter(dest => 
+                dest.name.toLowerCase().includes(searchTerm) || 
+                dest.description.toLowerCase().includes(searchTerm) ||
+                dest.category.toLowerCase().includes(searchTerm)
+            );
+            renderCards(filtered);
+            showListView();
+        }
+
+        if(searchInput) {
+            searchInput.addEventListener('input', performSearch);
+            searchInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        }
+        
+        const searchButton = document.getElementById('searchButton');
+        if(searchButton) {
+            searchButton.addEventListener('click', performSearch);
+        }
+
+        /******************************
+         * Mostrar lista de planes (lado izquierdo de reservar view)
+         ******************************/
+        function mostrarPlanesLista() {
+            listaPlanes.innerHTML = '';
+            destinations.forEach(plan => {
+                const precioFormateado = formatPrice(plan.price);
+                const planElement = document.createElement('div');
+                planElement.className = 'plan-ad';
+                planElement.innerHTML = `
+                    <div class="ad-imagen" style="background-image: url('${plan.image}')">
+                        <div class="ad-titulo"><h2>${plan.name}</h2></div>
+                    </div>
+                    <div class="ad-info">
+                        <div class="ad-datos-rapidos">
+                            <span>Duración: ${plan.duration || plan.duration}</span>
+                            <span class="precio-ad">${precioFormateado}</span>
+                        </div>
+                        <p style="margin-bottom:8px; color:#555;">${plan.description}</p>
+                        <button class="btn-accion" data-valor="${plan.id}" data-action="reservar">Reservar</button>
+                        <button class="btn-accion" data-valor="${plan.id}" data-action="add-to-cart" style="background-color: var(--color-secondary); margin-top:5px;">Añadir al Carrito</button>
+                    </div>
+                `;
+                listaPlanes.appendChild(planElement);
+            });
+
+            document.querySelectorAll('.btn-accion').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-valor');
+                    const action = e.target.getAttribute('data-action');
+                    const dest = destinations.find(d => d.id === id);
+
+                    if (action === 'reservar') {
+                        openReservasFor(id);
+                    } else if (action === 'add-to-cart' && dest) {
+                        addToCart(id); 
+                    }
+                });
+            });
+        }
+        
+        /******************************
+         * Eventos del Modal del Carrito
+         ******************************/
+        
+        // Abrir Modal
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            cartModal.classList.add('open');
+            cartModal.setAttribute('aria-hidden', 'false');
+            renderCart(); 
+        });
+
+        // Cerrar Modal
+        closeCartBtn.addEventListener('click', () => {
+            cartModal.classList.remove('open');
+            cartModal.setAttribute('aria-hidden', 'true');
+        });
+        
+        // Cerrar Modal al hacer clic fuera del contenido
+        cartModal.addEventListener('click', (e) => {
+            if (e.target.id === 'cartModal') {
+                cartModal.classList.remove('open');
+                cartModal.setAttribute('aria-hidden', 'true');
+            }
+        });
+        
+        // Simular Pago/Checkout
+        checkoutBtn.addEventListener('click', () => {
+            const total = getCartItemsArray().reduce((sum, item) => sum + item.price * item.quantity, 0);
+            if (total > 0) {
+                alert(`Procesando pago por ${formatPrice(total)} para ${Object.values(cart).reduce((sum, q) => sum + q, 0)} ítems. (Simulación)`);
+                // Vaciar el carrito después de la "compra"
+                cart = {};
+                saveCart(); 
+                cartModal.classList.remove('open');
+                showToast("¡Pago simulado exitoso! Carrito vaciado.");
+            }
+        });
+        
+        /******************************
+         * Funciones de Navegación de Vistas (Reservas)
+         ******************************/
+        function showReservarView(destination) {
+            listView.style.display = 'none';
+            reservarView.classList.add('show');
+            reservarView.setAttribute('aria-hidden', 'false');
+            
+            mostrarPlanesLista();
+
+            planSeleccionado = destination;
+            updateReservaPreview();
+            
+            formReserva.style.display = 'none';
+        }
+
+        function showListView() {
+            listView.style.display = 'block';
+            reservarView.classList.remove('show');
+            reservarView.setAttribute('aria-hidden', 'true');
+        }
+
+        function openReservasFor(id) {
+            const dest = destinations.find(d => d.id === id);
+            if (dest) {
+                showReservarView(dest);
+                preCargarFormulario(dest); 
+            }
+        }
+
+        btnVolver.addEventListener('click', showListView);
+
+        /******************************
+         * Funciones de Reserva (No Carrito)
+         ******************************/
+        function updateReservaPreview() {
+            if (!planSeleccionado) {
+                reservaPreview.innerHTML = '<p>Selecciona un tour para comenzar la reserva.</p>';
+                formReserva.style.display = 'none';
+                return;
+            }
+            
+            const cantidad = parseInt(cantidadInput.value, 10) || 1;
+            const total = planSeleccionado.price * cantidad;
+            
+            tourSeleccionadoInput.value = planSeleccionado.name;
+            totalPagarInput.value = formatPrice(total);
+            
+            reservaPreview.innerHTML = `
+                <p><strong>Tour:</strong> ${planSeleccionado.name}</p>
+                <p><strong>Duración:</strong> ${planSeleccionado.duration}</p>
+                <p><strong>Precio unitario:</strong> ${formatPrice(planSeleccionado.price)}</p>
+                <p><strong>Total estimado:</strong> ${formatPrice(total)}</p>
+            `;
+            formReserva.style.display = 'block';
+        }
+        
+        function preCargarFormulario(dest) {
+            planSeleccionado = dest;
+            updateReservaPreview();
+        }
+
+        cantidadInput.addEventListener('input', updateReservaPreview);
+
+
+        function renderReservas() {
+            listaReservasContainer.innerHTML = '';
+            if (reservasRealizadas.length === 0) {
+                listaReservasContainer.innerHTML = '<p class="muted">Aquí aparecerán tus reservas confirmadas.</p>';
+                return;
+            }
+            
+            reservasRealizadas.forEach((reserva, index) => {
+                const reservaEl = document.createElement('div');
+                reservaEl.className = 'reserva-guardada-item';
+                reservaEl.innerHTML = `
+                    <div>
+                        <div>
+                            <strong>${reserva.tour}</strong> (${reserva.fecha})<br>
+                            <span class="muted">${reserva.cantidad} personas - Total: ${formatPrice(reserva.total)}</span>
+                            <br>
+                            <span class="muted">Cliente: ${reserva.nombre} (${reserva.email})</span>
+                        </div>
+                        <button class="btn-eliminar-reserva" data-index="${index}">Eliminar</button>
+                    </div>
+                `;
+                listaReservasContainer.appendChild(reservaEl);
+            });
+            
+            document.querySelectorAll('.btn-eliminar-reserva').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    eliminarReserva(index);
+                });
+            });
+        }
+        
+        function eliminarReserva(index) {
+            if (confirm(`¿Estás seguro de que quieres eliminar la reserva de ${reservasRealizadas[index].tour}?`)) {
+                reservasRealizadas.splice(index, 1);
+                localStorage.setItem('parchapp_reservas', JSON.stringify(reservasRealizadas));
+                renderReservas();
+            }
+        }
+
+
+        formReserva.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const cantidad = parseInt(cantidadInput.value, 10);
+            const total = planSeleccionado.price * cantidad;
+            
+            const nuevaReserva = {
+                id: Date.now(),
+                tour: planSeleccionado.name,
+                fecha: fechaInput.value,
+                cantidad: cantidad,
+                nombre: document.getElementById('nombreCliente').value,
+                email: document.getElementById('emailCliente').value,
+                total: total
+            };
+            
+            reservasRealizadas.push(nuevaReserva);
+            localStorage.setItem('parchapp_reservas', JSON.stringify(reservasRealizadas));
+            
+            mensajeReserva.innerHTML = `<p style="color:green;">✅ ¡Reserva para ${planSeleccionado.name} confirmada!</p>`;
+            formReserva.reset();
+            planSeleccionado = null; // Limpiar selección
+            updateReservaPreview();
+            renderReservas();
+            
+            setTimeout(() => {
+                mensajeReserva.innerHTML = '';
+            }, 5000);
+        });
+        
+        /******************************
+         * Inicialización
+         ******************************/
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards();
+            renderReservas();
+            updateCartCount(); 
+            renderCart(); 
+            
+            initSlider(); 
+        });
+
+
+    </script>
+</body>
+</html>

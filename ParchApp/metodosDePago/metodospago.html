@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodos de pago</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="/ParchApp/index.html" target="_blank">Inicio</a></li>
+                <li><a href="/ParchApp/index.html" target="_blank">Destinos</a></li>
+                <li><a href="/ParchApp/index.html" target="_blank">Experiencias</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('../login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('../registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+
+
+
+<div class="main">
+    <h1 style="text-align: center;">BIENVENIDO A LA PASARELA DE PAGOS DE PARCHAPP</h1>
+
+    <h3> Formas de pago</h3>
+
+    
+
+    <select class="form-select form-select-lg mb-3 seleccion" id="seleccionForma" aria-label="Large select example">
+        <option selected>Seleccione una opción</option>
+        <option value="tarjecredi" class="opciones">Tarjetas de credito</option>
+        <option value="PagoBancos" class="opciones">Pago en bancos</option>
+        <option value="TransfBanc" class="opciones">Transferencias bancarias</option>
+    </select>
+    
+    <form id="formulario-tarjetas">
+
+        <div id="tarjetas" style="display: none;">
+        <h3> Tarjetas : </h3>
+
+        <select class="form-select form-select-lg mb-3 seleccion" id="seleccionTarje" aria-label="Large select example" onchange="pagoTarjetas(this)">
+            <option selected value="0">Seleccione una opción</option>
+            <option value="Visa">Visa</option>
+            <option value="Mastercard">Mastercard</option>
+            <option value="American Express">American Express</option>
+        </select>
+        
+        <!--
+        <button type="submit" class="btn btn-success">Pagar</button>
+        -->
+        </div>
+    
+    </form>
+
+    <div id="bancos" style="display: none;">
+
+    <h3> Bancos: </h3>
+
+    <select class="form-select form-select-lg mb-3 seleccion" id="seleccionBanco" aria-label="Large select example">
+        <option selected>Seleccione una opción</option>
+        <option value="Davivienda">Davivienda</option>
+        <option value="BancoBog">Banco de Bogotá</option>
+        <option value="Bancolombia">Bancolombia</option>
+    </select>
+    </div>
+
+
+    <div id="Transferencias" style="display: none;">
+
+    <h3> Bancos: </h3>
+
+    <select class="form-select form-select-lg mb-3 seleccion" id="seleccionTransf" aria-label="Large select example">
+        <option selected>Seleccione una opción</option>
+        <option value="Davivienda">PSE</option>
+    </select>
+    </div>
+
+</div>
+
+    <footer id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#destinos">Destinos</a></li>
+                    <li><a href="#experiencias">Experiencias</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="metodospago.js"></script>
+
+</body>
+</html>

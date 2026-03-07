@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Exitoso - ParchApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+            --color-success: #28a745;
+            --color-warning: #ffc107;
+            --color-danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--color-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            padding: 0.5rem 0;
+        }
+        
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cart-icon {
+            position: relative;
+            margin-left: 2rem;
+            cursor: pointer;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-login {
+            background-color: transparent;
+            color: var(--color-light);
+            border: 1px solid var(--color-light);
+        }
+        
+        .btn-register {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .success-container {
+            background: var(--color-light);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: var(--color-success);
+            margin-bottom: 1.5rem;
+        }
+        
+        .success-title {
+            color: var(--color-primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .success-subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .confirmation-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+        
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-title {
+            color: var(--color-primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-accent);
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+        
+        .detail-value {
+            color: #666;
+        }
+        
+        .detail-value.highlight {
+            color: var(--color-secondary);
+            font-weight: 600;
+        }
+        
+        .order-items {
+            margin-top: 1.5rem;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .order-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        
+        .item-details {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .item-price {
+            font-weight: 600;
+            color: var(--color-secondary);
+        }
+        
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.3rem;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 2px solid var(--color-accent);
+            color: var(--color-primary);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 8px;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            text-decoration: none;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 8px;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            text-decoration: none;
+        }
+        
+        .next-steps {
+            background: var(--color-light);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .steps-title {
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .steps-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .step-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .step-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-secondary);
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            padding: 2rem 2rem 1rem;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+            font-size: 1.1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .success-container, .next-steps {
+                padding: 2rem 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .success-title {
+                font-size: 2rem;
+            }
+            
+            .success-container, .next-steps {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+                    <div class="logo-container">
+            <img src="logo.png" alt="ParchApp" class="logo">
+        </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#destinos">Destinos</a></li>
+                <li><a href="historial.html">Mi Historial</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="success-container">
+            <div class="success-icon">✅</div>
+            <h1 class="success-title">¡Pago Exitoso!</h1>
+            <p class="success-subtitle">Tu reserva ha sido confirmada. Recibirás un correo electrónico con todos los detalles.</p>
+            
+            <div class="confirmation-details">
+                <div class="detail-section">
+                    <h3 class="detail-title">Detalles del Pago</h3>
+                    <div class="detail-grid" id="paymentDetails">
+                        <!-- Los detalles del pago se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-title">Resumen de tu Orden</h3>
+                    <div class="order-items" id="orderItems">
+                        <!-- Los items de la orden se cargarán aquí dinámicamente -->
+                    </div>
+                    <div class="total-section">
+                        <span>Total Pagado:</span>
+                        <span id="totalAmount">$0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="historial.html" class="btn-primary">Ver Mi Historial</a>
+                <a href="index.html" class="btn-outline">Seguir Explorando</a>
+            </div>
+        </div>
+        
+        <div class="next-steps">
+            <h2 class="steps-title">Próximos Pasos</h2>
+            <ul class="steps-list">
+                <li class="step-item">
+                    <div class="step-icon">📧</div>
+                    <h4 class="step-title">Confirmación por Email</h4>
+                    <p class="step-description">Recibirás un correo con los detalles de tu reserva en los próximos minutos.</p>
+                </li>
+                <li class="step-item">
+                    <div class="step-icon">📱</div>
+                    <h4 class="step-title">Recordatorio</h4>
+                    <p class="step-description">Te enviaremos un recordatorio 24 horas antes de tu tour.</p>
+                </li>
+                <li class="step-item">
+                    <div class="step-icon">👥</div>
+                    <h4 class="step-title">Guía Asignado</h4>
+                    <p class="step-description">Tu guía se pondrá en contacto contigo para coordinar los detalles.</p>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#destinos">Destinos</a></li>
+                    <li><a href="historial.html">Mi Historial</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Datos de ejemplo de tours
+        const toursData = {
+            "guatape": { name: "Guatapé - Tour Completo", price: 120000, duration: "1 día", category: "Naturaleza" },
+            "jardin": { name: "Jardín - Experiencia Cafetera", price: 150000, duration: "2 días", category: "Cultura" },
+            "santa-fe": { name: "Santa Fe de Antioquia", price: 100000, duration: "1 día", category: "Historia" },
+            "medellin": { name: "Medellín - Tour Ciudad", price: 90000, duration: "1 día", category: "Ciudad" },
+            "parque-arvi": { name: "Parque Arví", price: 80000, duration: "1 día", category: "Naturaleza" },
+            "rio-claro": { name: "Río Claro - Aventura", price: 180000, duration: "3 días", category: "Aventura" }
+        };
+
+        // Elementos del DOM
+        const paymentDetailsContainer = document.getElementById('paymentDetails');
+        const orderItemsContainer = document.getElementById('orderItems');
+        const totalAmountElement = document.getElementById('totalAmount');
+        const cartCount = document.getElementById('cartCount');
+
+        // Función para formatear precio
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Función para formatear fecha
+        function formatDate(dateString) {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateString).toLocaleDateString('es-CO', options);
+        }
+
+        // Función para limpiar el carrito
+        function clearCart() {
+            localStorage.removeItem('parchapp_cart');
+            cartCount.textContent = '0';
+        }
+
+        // Función para cargar los detalles del pago
+        function loadPaymentDetails() {
+            // Obtener datos del pago desde localStorage
+            const paymentData = JSON.parse(localStorage.getItem('parchapp_payment')) || {};
+            const cartData = paymentData.items || {};
+            
+            let total = 0;
+            let totalItems = 0;
+
+            // Mostrar detalles del pago
+            if (paymentData.method) {
+                paymentDetailsContainer.innerHTML = `
+                    <div class="detail-item">
+                        <span class="detail-label">Método de Pago:</span>
+                        <span class="detail-value">${paymentData.method === 'credit_card' ? 'Tarjeta de Crédito' : 'Pago en Banco'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Tipo de Tarjeta:</span>
+                        <span class="detail-value">${paymentData.cardType || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Últimos 4 Dígitos:</span>
+                        <span class="detail-value">${paymentData.lastFour ? '**** ' + paymentData.lastFour : 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Código de Referencia:</span>
+                        <span class="detail-value">${paymentData.referenceCode || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha y Hora:</span>
+                        <span class="detail-value">${formatDate(paymentData.timestamp || new Date().toISOString())}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Número de Confirmación:</span>
+                        <span class="detail-value highlight">PARCH${Date.now().toString().slice(-8)}</span>
+                    </div>
+                `;
+            } else {
+                // Datos de ejemplo si no hay datos en localStorage
+                paymentDetailsContainer.innerHTML = `
+                    <div class="detail-item">
+                        <span class="detail-label">Método de Pago:</span>
+                        <span class="detail-value">Tarjeta de Crédito</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Tipo de Tarjeta:</span>
+                        <span class="detail-value">Visa</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Últimos 4 Dígitos:</span>
+                        <span class="detail-value">**** 4321</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha y Hora:</span>
+                        <span class="detail-value">${formatDate(new Date().toISOString())}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Número de Confirmación:</span>
+                        <span class="detail-value highlight">PARCH${Date.now().toString().slice(-8)}</span>
+                    </div>
+                `;
+            }
+
+            // Mostrar items de la orden
+            orderItemsContainer.innerHTML = '';
+            
+            if (Object.keys(cartData).length > 0) {
+                Object.keys(cartData).forEach(tourId => {
+                    const tour = toursData[tourId];
+                    if (tour) {
+                        const quantity = cartData[tourId];
+                        const itemTotal = tour.price * quantity;
+                        total += itemTotal;
+                        totalItems += quantity;
+
+                        const orderItem = document.createElement('div');
+                        orderItem.className = 'order-item';
+                        orderItem.innerHTML = `
+                            <div class="item-info">
+                                <div class="item-name">${tour.name}</div>
+                                <div class="item-details">${tour.duration} • ${tour.category} • ${quantity} persona${quantity > 1 ? 's' : ''}</div>
+                            </div>
+                            <div class="item-price">${formatPrice(itemTotal)}</div>
+                        `;
+                        orderItemsContainer.appendChild(orderItem);
+                    }
+                });
+            } else {
+                // Datos de ejemplo si no hay items en el carrito
+                const exampleItems = [
+                    { id: "guatape", quantity: 2 },
+                    { id: "jardin", quantity: 1 }
+                ];
+                
+                exampleItems.forEach(item => {
+                    const tour = toursData[item.id];
+                    const itemTotal = tour.price * item.quantity;
+                    total += itemTotal;
+                    totalItems += item.quantity;
+
+                    const orderItem = document.createElement('div');
+                    orderItem.className = 'order-item';
+                    orderItem.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-name">${tour.name}</div>
+                            <div class="item-details">${tour.duration} • ${tour.category} • ${item.quantity} persona${item.quantity > 1 ? 's' : ''}</div>
+                        </div>
+                        <div class="item-price">${formatPrice(itemTotal)}</div>
+                    `;
+                    orderItemsContainer.appendChild(orderItem);
+                });
+            }
+
+            totalAmountElement.textContent = formatPrice(total);
+            
+            // LIMPIAR EL CARRITO INMEDIATAMENTE
+            clearCart();
+
+            // Simular envío de correo de confirmación
+            setTimeout(() => {
+                console.log('Correo de confirmación enviado al usuario');
+            }, 2000);
+        }
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPaymentDetails();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParchApp - Descubre Antioquia</title>
+    <style>
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+            --color-easy: #27ae60;      /* Verde para fácil */
+            --color-medium: #f39c12;    /* Naranja para intermedio */
+            --color-hard: #e74c3c;      /* Rojo para difícil */
+            --color-expert: #8e44ad;    /* Morado para experto */
+            --color-success: #27ae60;   /* Verde para alertas de éxito */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--color-dark);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+
+        .logo-container {
+            padding: 0.5rem 0;
+        }
+        
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cart-icon {
+            position: relative;
+            margin-left: 2rem;
+            cursor: pointer;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-login {
+            background-color: transparent;
+            color: var(--color-light);
+            border: 1px solid var(--color-light);
+        }
+        
+        .btn-register {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Hero Section con Carrusel */
+        .hero {
+            position: relative;
+            height: 70vh;
+            min-height: 500px;
+            color: var(--color-light);
+            overflow: hidden;
+        }
+
+        .carousel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .carousel-item.active {
+            opacity: 1;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(32, 46, 26, 0.7), rgba(32, 46, 26, 0.5));
+        }
+
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+            z-index: 10;
+        }
+
+        .carousel-control:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .carousel-control.prev {
+            left: 2rem;
+        }
+
+        .carousel-control.next {
+            right: 2rem;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .indicator.active {
+            background: var(--color-accent);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            padding: 0 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-container {
+            display: flex;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: var(--color-primary);
+        }
+        
+        /* Destinations Section */
+        .destinations {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--color-primary);
+            font-size: 2rem;
+        }
+        
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+
+        /* Indicadores de dificultad en los filtros */
+        .filter-difficulty {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .difficulty-easy { background-color: var(--color-easy); }
+        .difficulty-medium { background-color: var(--color-medium); }
+        .difficulty-hard { background-color: var(--color-hard); }
+        .difficulty-expert { background-color: var(--color-expert); }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .card {
+            background-color: var(--color-light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .card-description {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-price {
+            font-weight: bold;
+            color: var(--color-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .card-btn {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .card-btn:hover {
+            background-color: var(--color-secondary);
+        }
+
+        .card-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .availability {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-accent);
+            color: var(--color-primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Etiquetas de dificultad */
+        .difficulty-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-easy-badge {
+            background-color: var(--color-easy);
+        }
+
+        .difficulty-medium-badge {
+            background-color: var(--color-medium);
+        }
+
+        .difficulty-hard-badge {
+            background-color: var(--color-hard);
+        }
+
+        .difficulty-expert-badge {
+            background-color: var(--color-expert);
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .card-category {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        
+        /* Alert Styles */
+        .alert {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            background-color: var(--color-success);
+            color: var(--color-light);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            max-width: 300px;
+        }
+        
+        .alert.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .page-btn {
+            background-color: var(--color-light);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn.active {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            border-color: var(--color-secondary);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            padding: 3rem 2rem 1rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+            color: #aaa;
+        }
+
+        /* Leyenda de dificultad */
+        .difficulty-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero {
+                height: 60vh;
+                min-height: 400px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .carousel-control {
+                font-size: 1.5rem;
+                padding: 0.3rem 0.8rem;
+            }
+            
+            .carousel-control.prev {
+                left: 1rem;
+            }
+            
+            .carousel-control.next {
+                right: 1rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .difficulty-legend {
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                height: 50vh;
+                min-height: 350px;
+                padding: 3rem 1rem;
+            }
+            
+            .destinations {
+                padding: 2rem 1rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                border-radius: 4px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .search-btn {
+                border-radius: 4px;
+                padding: 0.8rem;
+            }
+
+            .filters {
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+            <img src="../imagenes/logo.png" alt="ParchApp" class="logo">
+        </div></div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#destinos">Destinos</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Alert Container -->
+    <div id="alertContainer" class="alert"></div>
+
+    <!-- Hero Section con Carrusel -->
+    <section class="hero" id="inicio">
+        <div class="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://willisbestguidemedellin.com/wp-content/uploads/2020/10/ANTIOQUIA-tours-nature-culture-adventure-ptivate-guide.jpg" alt="Paisaje de Antioquia">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://cincohorizontes.com/wp-content/uploads/2021/10/La-Piedra-del-Penon-de-Guatape-al-fondo.jpg" alt="Guatapé">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg" alt="Jardín">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://sercoltur.com/wp-content/uploads/2019/05/tour_santa_fe.webp" alt="Santa fe de Antioquia">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://cadissa.co/wp-content/uploads/2025/01/Confama.jpg" alt="Parque Arví">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://www.semana.com/resizer/v2/6H5Y4NW4YBCQ7AIJCUXNYME4HY.jpg?auth=eb1e97dfbcb329e59b1f19e2cad3b2aadb3130f44ef4fe8be8a4a82e1e999eee&smart=true&quality=75&width=1920" alt="Cerro Tusa">
+                </div>
+            </div>
+            <button class="carousel-control prev">&#10094;</button>
+            <button class="carousel-control next">&#10095;</button>
+            <div class="carousel-indicators">
+                <span class="indicator active" data-slide="0"></span>
+                <span class="indicator" data-slide="1"></span>
+                <span class="indicator" data-slide="2"></span>
+                <span class="indicator" data-slide="3"></span>
+                <span class="indicator" data-slide="4"></span>
+                <span class="indicator" data-slide="5"></span>
+            </div>
+        </div>
+        
+        <div class="hero-content">
+            <h1>Descubre las Maravillas de Antioquia</h1>
+            <p>Explora los diversos paisajes y la vibrante cultura de Antioquia, Colombia.</p>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Buscar destinos...">
+                <button class="search-btn">Buscar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Section -->
+    <section class="destinations" id="destinos">
+        <h2 class="section-title">Destinos Populares</h2>
+        
+        <!-- Leyenda de Dificultad -->
+        <div class="difficulty-legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--color-easy)"></div>
+                <span>Fácil - Para todos</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--color-medium)"></div>
+                <span>Intermedio - Algo de esfuerzo</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--color-hard)"></div>
+                <span>Difícil - Requiere condición física</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--color-expert)"></div>
+                <span>Experto - Alto nivel de condición</span>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active">Todos</button>
+            <button class="filter-btn">
+                <span class="filter-difficulty difficulty-easy"></span>
+                Fácil
+            </button>
+            <button class="filter-btn">
+                <span class="filter-difficulty difficulty-medium"></span>
+                Intermedio
+            </button>
+            <button class="filter-btn">
+                <span class="filter-difficulty difficulty-hard"></span>
+                Difícil
+            </button>
+            <button class="filter-btn">
+                <span class="filter-difficulty difficulty-expert"></span>
+                Experto
+            </button>
+            <button class="filter-btn">Naturaleza</button>
+            <button class="filter-btn">Ciudad</button>
+            <button class="filter-btn">Cultura</button>
+            <button class="filter-btn">Aventura</button>
+        </div>
+        
+        <div class="cards-container" id="cardsContainer">
+            <!-- Cards will be dynamically generated here -->
+        </div>
+        
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be dynamically generated here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#destinos">Destinos</a></li>
+                    <li><a href="#experiencias">Experiencias</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Datos de los tours (ACTUALIZADO CON NIVELES DE DIFICULTAD)
+        const destinations = [
+            {
+                id: "guatape",
+                name: "Guatapé",
+                description: "Conocido por su impresionante Peñol y sus coloridas casas, Guatapé ofrece paisajes únicos y actividades acuáticas.",
+                image: "https://cincohorizontes.com/wp-content/uploads/2021/10/La-Piedra-del-Penon-de-Guatape-al-fondo.jpg",
+                price: 120000,
+                category: "naturaleza",
+                difficulty: "easy", // fácil
+                availability: "available",
+                maxQuantity: 10,
+                redirectUrl: "guatape.html" // URL de redirección para Guatapé
+            },
+            {
+                id: "jardin",
+                name: "Jardín",
+                description: "Un pueblo mágico con arquitectura colonial, cascadas y cafetales. Perfecto para los amantes de la naturaleza.",
+                image: "https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg",
+                price: 150000,
+                category: "naturaleza",
+                difficulty: "easy", // fácil
+                availability: "limited",
+                maxQuantity: 5,
+                redirectUrl: "jardin.html" // URL de redirección para Jardín
+            },
+            {
+                id: "santa-fe",
+                name: "Santa Fe de Antioquia",
+                description: "Ciudad histórica con arquitectura colonial bien conservada y puentes emblemáticos sobre el río Cauca.",
+                image: "https://puebliandoporantioquia.com.co/wp-content/uploads/2019/07/Santa-Fe-de-Antioquia-a9.jpg",
+                price: 100000,
+                category: "cultura",
+                difficulty: "easy", // fácil
+                availability: "available",
+                maxQuantity: 8,
+                redirectUrl: "santafe.html" // URL de redirección para Santa Fe
+            },
+            {
+                id: "medellin",
+                name: "Medellín",
+                description: "La vibrante capital de Antioquia, conocida por su innovación, cultura y hermosos paisajes urbanos.",
+                image: "https://media.tacdn.com/media/attractions-splice-spp-674x446/06/dd/d4/1b.jpg",
+                price: 90000,
+                category: "ciudad",
+                difficulty: "easy", // fácil
+                availability: "available",
+                maxQuantity: 15
+            },
+            {
+                id: "parque-arvi",
+                name: "Parque Arví",
+                description: "Reserva natural con senderos ecológicos, actividades al aire libre y una vista panorámica de Medellín.",
+                image: "https://blog.redbus.co/wp-content/uploads/2024/10/Proyecto-nuevo-2025-02-27T112200.640.jpg",
+                price: 80000,
+                category: "naturaleza",
+                difficulty: "medium", // intermedio
+                availability: "available",
+                maxQuantity: 12
+            },
+            {
+                id: "rio-claro",
+                name: "Río Claro",
+                description: "Paraíso natural con ríos de aguas cristalinas, cuevas de mármol y exuberante vegetación.",
+                image: "https://www.viajescomfama.com/portals/1139/Images/rio-claro/viajescomfama-antioquia-viva-rio-claro.jpg",
+                price: 180000,
+                category: "aventura",
+                difficulty: "hard", // difícil
+                availability: "limited",
+                maxQuantity: 6
+            },
+            {
+                id: "san-jeronimo",
+                name: "San Jerónimo",
+                description: "Pueblo tranquilo ideal para descansar, con fincas cafeteras y paisajes rurales encantadores.",
+                image: "https://periodicoeloccidental.com/wp-content/uploads/2024/04/img_4582-1.jpg",
+                price: 110000,
+                category: "naturaleza",
+                difficulty: "easy", // fácil
+                availability: "available",
+                maxQuantity: 8
+            },
+            {
+                id: "cerro-tusa",
+                name: "Cerro Tusa",
+                description: "Una pirámide natural perfecta para el senderismo y disfrutar de vistas espectaculares.",
+                image: "https://www.medellinadvisors.com/wp-content/uploads/2019/05/cerro-tusa-is-a-natural-sanctuary-of-medellin.jpg",
+                price: 70000,
+                category: "aventura",
+                difficulty: "expert", // experto
+                availability: "available",
+                maxQuantity: 10
+            }
+        ];
+
+
+        const heroTitle = document.querySelector('.hero h1');
+            const heroDesc = document.querySelector('.hero p');
+        
+        // Texto en diapositivas
+
+        function changeText(index) {
+            
+            const titles = [
+                "Descubre las Maravillas de Antioquia",
+                "Explora Guatapé y el Peñol",
+                "Visita el Encantador Jardín",
+                "Explora Santa Fe de Antioquia",
+                "Aventúrate en el Parque Arví",
+                "Conquista el Cerro Tusa"
+            ];
+            const descriptions = [
+                "Explora los diversos paisajes y la vibrante cultura de Antioquia, Colombia.",
+                "Conocido por su impresionante Peñol y sus coloridas casas, Guatapé ofrece paisajes únicos y actividades acuáticas.",
+                "Un pueblo mágico con arquitectura colonial, cascadas y cafetales. Perfecto para los amantes de la naturaleza.",
+                "Ciudad histórica con arquitectura colonial bien conservada y puentes emblemáticos sobre el río Cauca.",
+                "Reserva natural con senderos ecológicos, actividades al aire libre y una vista panorámica de Medellín.",
+                "Una pirámide natural perfecta para el senderismo y disfrutar de vistas espectaculares."
+            ];
+            heroTitle.textContent = titles[index];
+            heroDesc.textContent = descriptions[index];
+        }
+
+        // Mapeo de dificultad a texto y clase CSS
+        const difficultyMap = {
+            "easy": { text: "Fácil", class: "difficulty-easy-badge" },
+            "medium": { text: "Intermedio", class: "difficulty-medium-badge" },
+            "hard": { text: "Difícil", class: "difficulty-hard-badge" },
+            "expert": { text: "Experto", class: "difficulty-expert-badge" }
+        };
+
+        // Mapeo de categorías a texto
+        const categoryMap = {
+            "naturaleza": "Naturaleza",
+            "ciudad": "Ciudad",
+            "cultura": "Cultura",
+            "aventura": "Aventura"
+        };
+
+        // Carrusel functionality
+        function initCarousel() {
+            const carouselItems = document.querySelectorAll('.carousel-item');
+            const indicators = document.querySelectorAll('.indicator');
+            const prevBtn = document.querySelector('.carousel-control.prev');
+            const nextBtn = document.querySelector('.carousel-control.next');
+            let currentSlide = 0;
+            let slideInterval;
+
+            function showSlide(index) {
+                carouselItems.forEach(item => item.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                carouselItems[index].classList.add('active');
+                indicators[index].classList.add('active');
+                
+                currentSlide = index;
+                changeText(index);
+            }
+
+            function nextSlide() {
+                let nextIndex = (currentSlide + 1) % carouselItems.length;
+                showSlide(nextIndex);
+
+            }
+
+            function prevSlide() {
+                let prevIndex = (currentSlide - 1 + carouselItems.length) % carouselItems.length;
+                showSlide(prevIndex);
+            }
+
+            function startAutoSlide() {
+                slideInterval = setInterval(nextSlide, 5000);
+            }
+
+            function stopAutoSlide() {
+                clearInterval(slideInterval);
+            }
+
+            // Event listeners
+            nextBtn.addEventListener('click', () => {
+                nextSlide();
+                stopAutoSlide();
+                startAutoSlide();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                prevSlide();
+                stopAutoSlide();
+                startAutoSlide();
+            });
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    showSlide(index);
+                    stopAutoSlide();
+                    startAutoSlide();
+                });
+            });
+
+            // Pause auto-slide on hover
+            const carousel = document.querySelector('.carousel');
+            carousel.addEventListener('mouseenter', stopAutoSlide);
+            carousel.addEventListener('mouseleave', startAutoSlide);
+
+            // Start auto-slide
+            startAutoSlide();
+        }
+
+        // Función para formatear precio
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Función para mostrar alertas
+        function showAlert(message) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.textContent = message;
+            alertContainer.classList.add('show');
+            
+            setTimeout(() => {
+                alertContainer.classList.remove('show');
+            }, 3000);
+        }
+
+        // Función para agregar al carrito
+        function addToCart(tourId) {
+            let cart = JSON.parse(localStorage.getItem('parchapp_cart')) || {};
+            const tour = destinations.find(d => d.id === tourId);
+            
+            if (!tour) return;
+
+            // Verificar disponibilidad
+            const currentQuantity = cart[tourId] || 0;
+            if (currentQuantity >= tour.maxQuantity) {
+                showAlert(`❌ Solo hay ${tour.maxQuantity} cupos disponibles para ${tour.name}`);
+                return;
+            }
+
+            // Agregar al carrito
+            cart[tourId] = (cart[tourId] || 0) + 1;
+            localStorage.setItem('parchapp_cart', JSON.stringify(cart));
+            
+            // Actualizar contador del carrito
+            updateCartCount();
+            
+            // Mostrar mensaje de éxito con fondo verde
+            showAlert(`✅ ${tour.name} agregado al carrito`);
+        }
+
+        // Función para redirigir a página de destino específica
+        function redirectToDestination(tourId) {
+            const tour = destinations.find(d => d.id === tourId);
+            if (tour && tour.redirectUrl) {
+                window.location.href = tour.redirectUrl;
+            }
+        }
+
+        // Función para actualizar contador del carrito
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('parchapp_cart')) || {};
+            const totalItems = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        // Pagination variables
+        const cardsPerPage = 6;
+        let currentPage = 1;
+        let filteredDestinations = [...destinations];
+
+        // DOM elements
+        const cardsContainer = document.getElementById('cardsContainer');
+        const paginationContainer = document.getElementById('pagination');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        // Function to display cards for current page
+        function displayCards() {
+            cardsContainer.innerHTML = '';
+            
+            const startIndex = (currentPage - 1) * cardsPerPage;
+            const endIndex = startIndex + cardsPerPage;
+            const cardsToShow = filteredDestinations.slice(startIndex, endIndex);
+            
+            cardsToShow.forEach(destination => {
+                const difficulty = difficultyMap[destination.difficulty];
+                const category = categoryMap[destination.category];
+                
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                // Si el destino tiene una URL de redirección, agregar evento de clic
+                if (destination.redirectUrl) {
+                    card.addEventListener('click', function() {
+                        redirectToDestination(destination.id);
+                    });
+                }
+                
+                card.innerHTML = `
+                    ${destination.availability === 'limited' ? '<span class="availability">Últimos cupos</span>' : ''}
+                    <div class="difficulty-badge ${difficulty.class}">${difficulty.text}</div>
+                    <img src="${destination.image}" alt="${destination.name}" class="card-img">
+                    <div class="card-content">
+                        <h3 class="card-title">${destination.name}</h3>
+                        <div class="card-meta">
+                            <span class="card-category">${category}</span>
+                        </div>
+                        <p class="card-description">${destination.description}</p>
+                        <div class="card-footer">
+                            <span class="card-price">${formatPrice(destination.price)}</span>
+                            <button class="card-btn" onclick="event.stopPropagation(); addToCart('${destination.id}')">
+                                Agregar al Carrito
+                            </button>
+                        </div>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+            
+            updatePagination();
+        }
+
+        // Function to update pagination buttons
+        function updatePagination() {
+            paginationContainer.innerHTML = '';
+            
+            const totalPages = Math.ceil(filteredDestinations.length / cardsPerPage);
+            
+            // Previous button
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = 'Anterior';
+                prevBtn.addEventListener('click', () => {
+                    currentPage--;
+                    displayCards();
+                });
+                paginationContainer.appendChild(prevBtn);
+            }
+            
+            // Page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    displayCards();
+                });
+                paginationContainer.appendChild(pageBtn);
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = 'Siguiente';
+                nextBtn.addEventListener('click', () => {
+                    currentPage++;
+                    displayCards();
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+        }
+
+        // Filter functionality
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                const filter = button.textContent.toLowerCase().trim();
+                
+                if (filter === 'todos') {
+                    filteredDestinations = [...destinations];
+                } else if (['fácil', 'intermedio', 'difícil', 'experto'].includes(filter)) {
+                    // Filtrar por dificultad
+                    const difficultyMapReverse = {
+                        'fácil': 'easy',
+                        'intermedio': 'medium',
+                        'difícil': 'hard',
+                        'experto': 'expert'
+                    };
+                    filteredDestinations = destinations.filter(dest => 
+                        dest.difficulty === difficultyMapReverse[filter]
+                    );
+                } else {
+                    // Filtrar por categoría
+                    filteredDestinations = destinations.filter(dest => 
+                        dest.category === filter
+                    );
+                }
+                
+                currentPage = 1;
+                displayCards();
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchBtn = document.querySelector('.search-btn');
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm) {
+                filteredDestinations = destinations.filter(dest => 
+                    dest.name.toLowerCase().includes(searchTerm) || 
+                    dest.description.toLowerCase().includes(searchTerm)
+                );
+            } else {
+                filteredDestinations = [...destinations];
+            }
+            
+            currentPage = 1;
+            displayCards();
+        }
+        
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            initCarousel();
+            displayCards();
+            updateCartCount();
+            
+            // Agregar evento al botón "Proceder al pago" en el carrito
+            // Esto se manejará en carrito.html, pero aquí podemos agregar el enlace
+            // para que cuando se cree carrito.html, ya tenga la redirección
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicador de Planes Turísticos</title>
+  <link rel="stylesheet" href="estilos1.css">
+</head>
+<body>
+    
+<div class="contenedor-principal">
+    
+    <div class="formulario-columna">
+        <h2>Publicación Turística</h2>
+        <div id="mensajeAdmin"></div>
+        <form id="formPlan">
+            
+            <label for="nombre">Nombre del plan:</label>
+            <input list="destinos" type="text" id="nombre" placeholder="Eliga un lugar o destino" required />
+            <datalist id="destinos">
+                </datalist>
+            
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" rows="4" placeholder="Añade una Descripción" required></textarea>
+
+            <label for="precio">Precio (COP):</label>
+            <input type="number" id="precio" min="175000" step="1000" value="175000" required />
+
+            <label for="imagen">Imagen (Fondo del Anuncio):</label>
+            <select name="imagen" id="imagen">
+                <option value="">Selecciona una imagen...</option>
+                </select>
+            
+            <label for="duracion">Duración:</label>
+            <input type="text" id="duracion" placeholder="Depende del tuor" required />
+
+            <label>Disponibilidad:</label>
+            <input type="text" value="Domingo a domingo" readonly />
+            <br>
+            <button type="submit">Publicar Plan</button>
+        </form>
+    </div>
+    
+    <div class="publicacion-columna" id="publicacionContainer">
+        <h3 style="margin-top: 20px;">Vista Previa de la Publicación</h3>
+        <div class="plan-ad" id="adPreview">
+            </div>
+    </div>
+</div>
+
+
+ <script src="planes_turist.js"></script>
+
+</body>
+</html>
+
+------------------------------------------------------------------------------------------
+let destinosData = [
+    // La mayoría de los archivos de imagen deben ir dentro de la carpeta 'imagenes/'
+    // He corregido mayúsculas/minúsculas y extensiones para coincidir con el panel de tu VS Code.
+    { nombre: "Guatapé", valor: "guatape", url: "guatape2.png", descripcion_corta: "La aventura perfecta: embalse, zócalos coloridos y el imponente Peñol." },
+    { nombre: "Jardín", valor: "jardin", url: "jardin.png", descripcion_corta: "El encanto colonial y el mejor café del Suroeste antioqueño." },
+    { nombre: "San Rafael", valor: "san-rafael", url: "San Rafael.png", descripcion_corta: "Aguas cristalinas y naturaleza exuberante para un descanso total." },
+    { nombre: "Santa Fe de Antioquia", valor: "santa-fe", url: "SantFeAnt.png", descripcion_corta: "Viaje histórico a la Ciudad Madre, clima cálido y arquitectura colonial." },
+    { nombre: "Comuna 13", valor: "comuna-13", url: "comuna13.png", descripcion_corta: "Arte urbano, escaleras eléctricas y un ejemplo de transformación social." }, 
+    { nombre: "Jericó", valor: "Jericó", url: "jerico.png", descripcion_corta: "Arquitectura tradicional y miradores impresionantes." },
+    { nombre: "Medellín", valor: "Medellín", url: "medellin.png", descripcion_corta: "Metrópolis de la eterna primavera, arte y cultura vibrante." },
+    { nombre: "Parque Arví", valor: "parque-arvi", url: "parqueArví.png", descripcion_corta: "Reserva natural, aire puro y conexión con el bosque." },
+    { nombre: "San Carlos", valor: "San Carlos", url: "SanCarlos.png", descripcion_corta: "Paraíso de charcos y cascadas, ideal para el turismo de aventura." },
+    { nombre: "Necoclí", valor: "necoclí", url: "necocli.png", descripcion_corta: "Playas caribeñas y tranquilidad en el Golfo de Urabá." },
+    { nombre: "Sonsón", valor: "Sonson", url: "sonson.png", descripcion_corta: "La 'ciudad de los cien balcones', rica en historia y tradición paisa." },
+    { nombre: "Támesis", valor: "Támesis", url: "tamesis.png", descripcion_corta: "Riqueza arqueológica y paisajes montañosos para escalada." },
+    { nombre: "El Retiro", valor: "El Retiro", url: "Elretiro.png", descripcion_corta: "Pueblo artesanal y hogar de las mejores ebanisterías." },
+    { nombre: "La Ceja", valor: "La ceja", url: "laCeja.png", descripcion_corta: "La tierra de las flores, ideal para el agroturismo." },
+    { nombre: "Hacienda Nápoles", valor: "Napoles", url: "Napoles.png", descripcion_corta: "Un safari colombiano lleno de historia y fauna exótica." },
+    { nombre: "Río Claro Reserva Natural", valor: "Río Claro Reserva Natural", url: "Río Claro.png", descripcion_corta: "Aguas cristalinas, cavernas de mármol y selva tropical." },
+    ]
+
+let planes = []; // Array para almacenar planes
+
+// --- Referencias a Elementos del DOM ---
+const formPlan = document.getElementById('formPlan');
+const mensajeAdmin = document.getElementById('mensajeAdmin');
+const nombreInput = document.getElementById('nombre');
+const imagenSelect = document.getElementById('imagen');
+const datalist = document.getElementById('destinos');
+const publicacionContainer = document.getElementById('publicacionContainer');
+const adPreview = document.getElementById('adPreview');
+
+// --- 1. Funcionalidad de Autocompletado (Datalist) ---
+function llenarDatalistYSelect() {
+    // Limpiar opciones previas
+    datalist.innerHTML = '';
+    imagenSelect.innerHTML = '<option value="">Selecciona una imagen...</option>';
+
+    destinosData.forEach(destino => {
+        // Llenar el Datalist para el autocompletado en el input 'nombre'
+        const optionDatalist = document.createElement('option');
+        optionDatalist.value = destino.nombre;
+        datalist.appendChild(optionDatalist);
+
+        // Llenar el Select de Imagen
+        const optionSelect = document.createElement('option');
+        optionSelect.value = destino.valor;
+        optionSelect.textContent = destino.nombre;
+        imagenSelect.appendChild(optionSelect);
+    });
+}
+
+// Inicializar el Datalist y Select al cargar
+llenarDatalistYSelect();
+
+// --- 2. Funcionalidad de Publicación (Submit) ---
+formPlan.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Recolectar datos
+    const nombre = nombreInput.value.trim();
+    const descripcion = document.getElementById('descripcion').value.trim();
+    const precio = parseInt(document.getElementById('precio').value);
+    const imagenValor = imagenSelect.value;
+    const duracion = document.getElementById('duracion').value.trim();
+    const diasDisponibles = "Domingo a domingo";
+
+    if (!nombre || !descripcion || isNaN(precio) || precio < 175000 || !duracion || !imagenValor) {
+        mensajeAdmin.textContent = "Por favor, verifica que todos los campos estén completos y el precio sea correcto (mínimo $175.000 COP).";
+        mensajeAdmin.style.color = "red";
+        return;
+    }
+
+    // Buscar el destino completo
+    const destinoSeleccionado = destinosData.find(d => d.valor === imagenValor);
+    const imagenURL = destinoSeleccionado ? destinoSeleccionado.url : '';
+    const descripcionCorta = destinoSeleccionado ? destinoSeleccionado.descripcion_corta : '';
+
+    const nuevoPlan = { nombre, descripcion, precio, imagenURL, duracion, diasDisponibles, descripcionCorta };
+    planes.push(nuevoPlan);
+
+    // Mostrar la publicación en la columna derecha
+    mostrarPublicacionFinal(nuevoPlan);
+    
+    mensajeAdmin.textContent = `Plan "${nombre}" publicado correctamente.`;
+    mensajeAdmin.style.color = "green";
+    formPlan.reset(); // Limpiar el formulario para un nuevo plan
+    imagenSelect.value = ""; // Asegurarse de que el select de imagen vuelva a la opción por defecto
+});
+
+// --- 3. Renderizado de la Publicación Final ---
+function mostrarPublicacionFinal(plan) {
+    // Hacemos visible la columna de publicación
+    publicacionContainer.style.display = 'flex';
+    
+    // Formato de moneda
+    const precioFormateado = plan.precio.toLocaleString('es-CO', { 
+        style: 'currency', 
+        currency: 'COP', 
+        minimumFractionDigits: 0 
+    });
+
+    // Contenido del Anuncio Final
+    adPreview.innerHTML = `
+        <div class="ad-imagen" style="background-image: url('${plan.imagenURL}')">
+            <div class="ad-titulo">
+                <h2>${plan.nombre.toUpperCase()}</h2>
+                <p>${plan.descripcionCorta}</p>
+            </div>
+            </div>
+        
+        <div class="ad-info">
+            <h3>Detalles del Plan Turístico</h3>
+            
+            <div class="ad-datos-rapidos">
+                <span>Duración: ${plan.duracion}</span>
+                <span>Disponibilidad: ${plan.diasDisponibles}</span>
+                <span class="precio-ad">${precioFormateado}</span>
+            </div>
+            
+            <div class="ad-descripcion">
+                <label style="font-weight: bold; margin-top: 15px;">Descripción Completa:</label>
+                <p>${plan.descripcion}</p>
+                
+                <button class="btn-accion" style="margin-top: 20px;">¡RESERVA TU PLAN!</button>
+            </div>
+        </div>`;
+}
+
+---------------------------------------------------------------------------------------
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .contenedor-principal {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            gap: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .formulario-columna {
+            flex: 1;
+            padding-right: 20px;
+            border-right: 1px solid #eee;
+        }
+
+        .publicacion-columna {
+            flex: 2;
+            min-height: 600px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            display: none; /* Oculto inicialmente */
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Estilos del formulario */
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button[type="submit"] {
+            background-color: #38761d;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        /* Estilos de la publicación final */
+        .plan-ad {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .ad-imagen {
+            width: 100%;
+            height: 350px;
+            background-color: #ccc;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 20px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .ad-titulo h2 {
+            margin: 0;
+            font-size: 3em;
+            line-height: 1;
+            font-weight: 900;
+        }
+
+        .ad-titulo p {
+            margin-top: 5px;
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+
+        .ad-info {
+            background-color: white;
+            color: #333;
+            padding: 20px;
+        }
+
+        .ad-info h3 {
+            color: #38761d;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .ad-descripcion {
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        .ad-datos-rapidos {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .ad-datos-rapidos span {
+            padding: 8px 15px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .ad-datos-rapidos .precio-ad {
+            background-color: #38761d;
+            color: white;
+        }
+        
+        #mensajeAdmin {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+

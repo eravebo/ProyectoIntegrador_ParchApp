@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParchApp - Panel de Administración</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/stylesAdmin.css">
+    <style>
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img src="../imagenes/logo.png" alt="ParchApp" class="logo">
+        </div>
+        <div class="admin-nav">
+            <div class="nav-links">
+                <a href="comparacion_metricas.html" class="nav-link">Comparación & Métricas</a>
+                <a href="gestion_users.html" class="nav-link">Gestor de usuarios</a>
+                <a href="publicar_planes.html" class="nav-link">Publicación de Planes</a>
+                <a href="notificaciones_admin.html" class="nav-link notification-link">
+                    Notificaciones
+                    <span class="notification-badge" id="notificationCount">3</span>
+                </a>
+            </div>
+            <div class="user-menu">
+                <span class="user-name">Administrador</span>
+                <button class="btn btn-secondary" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Principal -->
+    <div class="container">
+        <div class="dashboard">
+            <h1 class="dashboard-title">Panel de Administración</h1>
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <h3>Comparación de Agencias</h3>
+                    <p>Compara planes y métricas de diferentes agencias</p>
+                    <a href="comparacion_metricas.html" class="btn btn-primary">Ir al Módulo</a>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Publicación de Planes</h3>
+                    <p>Gestiona y publica nuevos planes turísticos</p>
+                    <a href="publicar_planes.html" class="btn btn-primary">Ir al Módulo</a>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Notificaciones</h3>
+                    <p>Revisa solicitudes y alertas del sistema</p>
+                    <a href="notificaciones_admin.html" class="btn btn-primary">Ir al Módulo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+</body>
+</html>

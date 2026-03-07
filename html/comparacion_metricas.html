@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparación & Métricas - ParchApp Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/stylesAdmin.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="../imagenes/logo.png" alt="ParchApp" class="logo">
+        </div>
+        <div class="admin-nav">
+            <a href="admin.html" class="btn btn-secondary">← Volver al Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="section-title">Comparación & Métricas</h1>
+        
+        <!-- Comparador de Planes -->
+        <div class="module-section">
+            <h2>Comparador de Planes de Agencias</h2>
+            <div class="comparison-container">
+                <div class="comparison-select">
+                    <label for="agencyA">Agencia A</label>
+                    <select id="agencyA">
+                        <option value="">Selecciona una agencia</option>
+                        <option value="agency1">Aventura Extrema</option>
+                        <option value="agency2">Tours Colombia</option>
+                        <option value="agency3">Naturaleza Viva</option>
+                        <option value="agency4">EcoTours Antioquia</option>
+                    </select>
+                </div>
+                <div class="comparison-select">
+                    <label for="agencyB">Agencia B</label>
+                    <select id="agencyB">
+                        <option value="">Selecciona una agencia</option>
+                        <option value="agency1">Aventura Extrema</option>
+                        <option value="agency2">Tours Colombia</option>
+                        <option value="agency3">Naturaleza Viva</option>
+                        <option value="agency4">EcoTours Antioquia</option>
+                    </select>
+                </div>
+                <button id="compareBtn" class="btn btn-primary">Comparar</button>
+            </div>
+            
+            <div id="comparisonResult" class="comparison-result">
+                <!-- Resultados dinámicos -->
+            </div>
+        </div>
+
+        <!-- Métricas -->
+        <div class="module-section">
+            <h2>Métricas de Desempeño</h2>
+            <div class="metrics-container">
+                <div class="metric-card">
+                    <div class="metric-value" id="totalAgencies">0</div>
+                    <div class="metric-label">Agencias Activas</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="totalPlans">0</div>
+                    <div class="metric-label">Planes Publicados</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="reservationsToday">0</div>
+                    <div class="metric-label">Reservas Hoy</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="satisfactionRate">0%</div>
+                    <div class="metric-label">Tasa de Satisfacción</div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Top agencias por cantidad de planes</h3>
+            <div class="metrics-container" id="topAgenciesContainer"></div>
+
+            <h3 class="subsection-title">Destinos más visitados</h3>
+            <div class="metrics-container" id="topDestinationsContainer"></div>
+
+            <h3 class="subsection-title">Viajeros por género</h3>
+            <div class="metrics-container" id="genderMetricsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Datos completos de agencias y planes
+        const agenciesData = {
+            agency1: {
+                name: "Aventura Extrema",
+                plans: [
+                    { 
+                        name: "Escalada en Piedra del Peñol", 
+                        value: 150000, 
+                        category: "aventura", 
+                        rating: 4.8,
+                        duration: "1 día",
+                        difficulty: "Alta",
+                        includes: "Guía, equipo, seguro"
+                    },
+                    { 
+                        name: "Rappel en Cascadas", 
+                        value: 180000, 
+                        category: "aventura", 
+                        rating: 4.7,
+                        duration: "1 día",
+                        difficulty: "Media",
+                        includes: "Guía, equipo, transporte"
+                    },
+                    { 
+                        name: "Tour Nocturno Guatapé", 
+                        value: 120000, 
+                        category: "cultural", 
+                        rating: 4.5,
+                        duration: "Noche",
+                        difficulty: "Baja",
+                        includes: "Guía, cena, transporte"
+                    }
+                ],
+                metrics: {
+                    totalPlans: 8,
+                    activePlans: 6,
+                    satisfaction: 92,
+                    reservations: 45
+                }
+            },
+            agency2: {
+                name: "Tours Colombia",
+                plans: [
+                    { 
+                        name: "Recorrido Histórico Medellín", 
+                        value: 80000, 
+                        category: "cultural", 
+                        rating: 4.5,
+                        duration: "4 horas",
+                        difficulty: "Baja",
+                        includes: "Guía, entradas, refrigerio"
+                    },
+                    { 
+                        name: "Tour del Café Antioqueño", 
+                        value: 110000, 
+                        category: "cultural", 
+                        rating: 4.6,
+                        duration: "6 horas",
+                        difficulty: "Baja",
+                        includes: "Guía, degustación, transporte"
+                    },
+                    { 
+                        name: "Pueblos Patrimonio", 
+                        value: 130000, 
+                        category: "cultural", 
+                        rating: 4.4,
+                        duration: "1 día",
+                        difficulty: "Baja",
+                        includes: "Guía, almuerzo, transporte"
+                    }
+                ],
+                metrics: {
+                    totalPlans: 12,
+                    activePlans: 10,
+                    satisfaction: 88,
+                    reservations: 67
+                }
+            },
+            agency3: {
+                name: "Naturaleza Viva",
+                plans: [
+                    { 
+                        name: "Senderismo Parque Arví", 
+                        value: 70000, 
+                        category: "naturaleza", 
+                        rating: 4.7,
+                        duration: "5 horas",
+                        difficulty: "Media",
+                        includes: "Guía, seguro, refrigerio"
+                    },
+                    { 
+                        name: "Avistamiento de Aves", 
+                        value: 90000, 
+                        category: "naturaleza", 
+                        rating: 4.3,
+                        duration: "3 horas",
+                        difficulty: "Baja",
+                        includes: "Guía, binoculares, guía de aves"
+                    },
+                    { 
+                        name: "Tour Ecológico Río Claro", 
+                        value: 160000, 
+                        category: "naturaleza", 
+                        rating: 4.8,
+                        duration: "1 día",
+                        difficulty: "Media",
+                        includes: "Guía, almuerzo, equipo"
+                    }
+                ],
+                metrics: {
+                    totalPlans: 9,
+                    activePlans: 7,
+                    satisfaction: 94,
+                    reservations: 38
+                }
+            },
+            agency4: {
+                name: "EcoTours Antioquia",
+                plans: [
+                    { 
+                        name: "Tour Sostenible Jardín", 
+                        value: 140000, 
+                        category: "ecoturismo", 
+                        rating: 4.9,
+                        duration: "1 día",
+                        difficulty: "Baja",
+                        includes: "Guía, almuerzo orgánico, transporte"
+                    },
+                    { 
+                        name: "Agricultura Local", 
+                        value: 95000, 
+                        category: "cultural", 
+                        rating: 4.6,
+                        duration: "4 horas",
+                        difficulty: "Baja",
+                        includes: "Guía, degustación, materiales"
+                    },
+                    { 
+                        name: "Caminata Nocturna", 
+                        value: 85000, 
+                        category: "aventura", 
+                        rating: 4.4,
+                        duration: "3 horas",
+                        difficulty: "Baja",
+                        includes: "Guía, linterna, seguro"
+                    }
+                ],
+                metrics: {
+                    totalPlans: 6,
+                    activePlans: 5,
+                    satisfaction: 96,
+                    reservations: 29
+                }
+            }
+        };
+
+        // Función para formatear precio
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Función para comparar agencias
+        function compareAgencies() {
+            const agencyA = document.getElementById('agencyA').value;
+            const agencyB = document.getElementById('agencyB').value;
+            const resultContainer = document.getElementById('comparisonResult');
+            
+            if (!agencyA || !agencyB) {
+                resultContainer.innerHTML = '<div class="error-message">Por favor selecciona dos agencias para comparar</div>';
+                return;
+            }
+            
+            if (agencyA === agencyB) {
+                resultContainer.innerHTML = '<div class="error-message">Por favor selecciona dos agencias diferentes</div>';
+                return;
+            }
+            
+            const agencyAData = agenciesData[agencyA];
+            const agencyBData = agenciesData[agencyB];
+            
+            if (!agencyAData || !agencyBData) {
+                resultContainer.innerHTML = '<div class="error-message">Error: Datos de agencias no encontrados</div>';
+                return;
+            }
+            
+            // Generar tabla de comparación
+            let html = `
+                <h3>Comparación: ${agencyAData.name} vs ${agencyBData.name}</h3>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Plan</th>
+                                <th>Agencia</th>
+                                <th>Valor</th>
+                                <th>Categoría</th>
+                                <th>Calificación</th>
+                                <th>Duración</th>
+                                <th>Incluye</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            // Agregar planes de Agencia A
+            agencyAData.plans.forEach(plan => {
+                html += `
+                    <tr>
+                        <td><strong>${plan.name}</strong></td>
+                        <td>${agencyAData.name}</td>
+                        <td>${formatPrice(plan.value)}</td>
+                        <td>${plan.category}</td>
+                        <td>${plan.rating}/5 ⭐</td>
+                        <td>${plan.duration}</td>
+                        <td>${plan.includes}</td>
+                    </tr>
+                `;
+            });
+            
+            // Agregar planes de Agencia B
+            agencyBData.plans.forEach(plan => {
+                html += `
+                    <tr>
+                        <td><strong>${plan.name}</strong></td>
+                        <td>${agencyBData.name}</td>
+                        <td>${formatPrice(plan.value)}</td>
+                        <td>${plan.category}</td>
+                        <td>${plan.rating}/5 ⭐</td>
+                        <td>${plan.duration}</td>
+                        <td>${plan.includes}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="metrics-comparison">
+                    <h4>Métricas Comparativas</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-comparison">
+                            <h5>Total de Planes</h5>
+                            <div class="metric-bar">
+                                <div class="metric-fill agency-a" style="width: ${(agencyAData.metrics.totalPlans / 15) * 100}%">
+                                    ${agencyAData.metrics.totalPlans}
+                                </div>
+                                <div class="metric-fill agency-b" style="width: ${(agencyBData.metrics.totalPlans / 15) * 100}%">
+                                    ${agencyBData.metrics.totalPlans}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="metric-comparison">
+                            <h5>Tasa de Satisfacción</h5>
+                            <div class="metric-bar">
+                                <div class="metric-fill agency-a" style="width: ${agencyAData.metrics.satisfaction}%">
+                                    ${agencyAData.metrics.satisfaction}%
+                                </div>
+                                <div class="metric-fill agency-b" style="width: ${agencyBData.metrics.satisfaction}%">
+                                    ${agencyBData.metrics.satisfaction}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="metric-comparison">
+                            <h5>Reservas Activas</h5>
+                            <div class="metric-bar">
+                                <div class="metric-fill agency-a" style="width: ${(agencyAData.metrics.reservations / 70) * 100}%">
+                                    ${agencyAData.metrics.reservations}
+                                </div>
+                                <div class="metric-fill agency-b" style="width: ${(agencyBData.metrics.reservations / 70) * 100}%">
+                                    ${agencyBData.metrics.reservations}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            resultContainer.innerHTML = html;
+        }
+
+        // Utilidad: cargar planes de agencias desde localStorage (opcional)
+        function loadAgencyPlansFromStorage() {
+            try {
+                const raw = localStorage.getItem('parchapp_agency_plans');
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Función para actualizar métricas generales
+        function updateMetrics() {
+            // Calcular métricas generales
+            const totalAgencies = Object.keys(agenciesData).length;
+            let totalPlans = 0;
+            let totalReservations = 0;
+            let totalSatisfaction = 0;
+            let agencyCount = 0;
+            
+            Object.values(agenciesData).forEach(agency => {
+                totalPlans += agency.metrics.totalPlans;
+                totalReservations += agency.metrics.reservations;
+                totalSatisfaction += agency.metrics.satisfaction;
+                agencyCount++;
+            });
+            
+            const avgSatisfaction = Math.round(totalSatisfaction / agencyCount);
+            
+            // Actualizar UI
+            document.getElementById('totalAgencies').textContent = totalAgencies;
+            document.getElementById('totalPlans').textContent = totalPlans;
+            document.getElementById('reservationsToday').textContent = totalReservations;
+            document.getElementById('satisfactionRate').textContent = `${avgSatisfaction}%`;
+        }
+
+        // Top agencias por cantidad de planes
+        function renderTopAgencies() {
+            const container = document.getElementById('topAgenciesContainer');
+            const storedPlans = loadAgencyPlansFromStorage();
+            const counts = {};
+
+            if (storedPlans.length) {
+                storedPlans.forEach(function (plan) {
+                    const agencyName = plan.agency || 'Agencia sin nombre';
+                    counts[agencyName] = (counts[agencyName] || 0) + 1;
+                });
+            } else {
+                Object.values(agenciesData).forEach(function (agency) {
+                    counts[agency.name] = agency.metrics.totalPlans;
+                });
+            }
+
+            const sorted = Object.entries(counts)
+                .map(function (entry) { return { name: entry[0], totalPlans: entry[1] }; })
+                .sort(function (a, b) { return b.totalPlans - a.totalPlans; })
+                .slice(0, 3);
+
+            container.innerHTML = '';
+
+            sorted.forEach(function (item) {
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                card.innerHTML = `
+                    <div class="metric-value">${item.totalPlans}</div>
+                    <div class="metric-label">${item.name}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Destinos más visitados (o más ofertados)
+        function renderTopDestinations() {
+            const container = document.getElementById('topDestinationsContainer');
+            const storedPlans = loadAgencyPlansFromStorage();
+            const destCounts = {};
+
+            if (storedPlans.length) {
+                storedPlans.forEach(function (plan) {
+                    const dest = plan.destination || 'Otro';
+                    destCounts[dest] = (destCounts[dest] || 0) + 1;
+                });
+            } else {
+                // Datos de ejemplo si no hay información en localStorage
+                ['Guatapé', 'Jardín', 'Santa Fe de Antioquia', 'Medellín', 'Parque Arví'].forEach(function (name, index) {
+                    destCounts[name] = [120, 95, 80, 70, 60][index];
+                });
+            }
+
+            const sorted = Object.entries(destCounts)
+                .map(function (entry) { return { name: entry[0], visits: entry[1] }; })
+                .sort(function (a, b) { return b.visits - a.visits; })
+                .slice(0, 4);
+
+            container.innerHTML = '';
+
+            sorted.forEach(function (item) {
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                card.innerHTML = `
+                    <div class="metric-value">${item.visits}</div>
+                    <div class="metric-label">${item.name}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Métrica viajeros hombre vs mujeres (ejemplo simple)
+        function renderGenderMetrics() {
+            const container = document.getElementById('genderMetricsContainer');
+            const genderStats = { male: 55, female: 45 }; // datos de ejemplo
+
+            container.innerHTML = '';
+
+            const maleCard = document.createElement('div');
+            maleCard.className = 'metric-card';
+            maleCard.innerHTML = `
+                <div class="metric-value">${genderStats.male}%</div>
+                <div class="metric-label">Viajeros hombres</div>
+            `;
+
+            const femaleCard = document.createElement('div');
+            femaleCard.className = 'metric-card';
+            femaleCard.innerHTML = `
+                <div class="metric-value">${genderStats.female}%</div>
+                <div class="metric-label">Viajeras mujeres</div>
+            `;
+
+            container.appendChild(maleCard);
+            container.appendChild(femaleCard);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar evento del botón de comparar
+            document.getElementById('compareBtn').addEventListener('click', compareAgencies);
+            
+            // Actualizar métricas generales
+            updateMetrics();
+            renderTopAgencies();
+            renderTopDestinations();
+            renderGenderMetrics();
+            
+            // Mostrar mensaje inicial
+            document.getElementById('comparisonResult').innerHTML = `
+                <div class="info-message">
+                    <p>Selecciona dos agencias del menú desplegable y haz clic en "Comparar" para ver el análisis detallado.</p>
+                    <p><strong>Agencias disponibles:</strong> ${Object.values(agenciesData).map(a => a.name).join(', ')}</p>
+                </div>
+            `;
+        });
+    </script>
+
+    <style>
+        /* Estilos mínimos para la funcionalidad de comparación */
+        .comparison-result {
+            margin-top: 2rem;
+        }
+        
+        .comparison-table {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: #233d00;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .metrics-comparison {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .metric-comparison h5 {
+            margin-bottom: 0.5rem;
+            color: #233d00;
+        }
+        
+        .metric-bar {
+            display: flex;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .metric-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: width 0.3s ease;
+        }
+        
+        .metric-fill.agency-a {
+            background-color: #457a00;
+        }
+        
+        .metric-fill.agency-b {
+            background-color: #233d00;
+        }
+        
+        .error-message {
+            padding: 1rem;
+            background: #ffebee;
+            color: #d32f2f;
+            border-radius: 8px;
+            border-left: 4px solid #d32f2f;
+        }
+        
+        .info-message {
+            padding: 1.5rem;
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-radius: 8px;
+            border-left: 4px solid #2e7d32;
+        }
+    </style>
+</body>
+</html>

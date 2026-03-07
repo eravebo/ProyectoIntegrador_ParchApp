@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasarela de Pagos - ParchApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+            --color-success: #28a745;
+            --color-warning: #ffc107;
+            --color-danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--color-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+
+        .logo-container {
+            padding: 0.5rem 0;
+        }
+        
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cart-icon {
+            position: relative;
+            margin-left: 2rem;
+            cursor: pointer;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-login {
+            background-color: transparent;
+            color: var(--color-light);
+            border: 1px solid var(--color-light);
+        }
+        
+        .btn-register {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--color-accent);
+        }
+        
+        .page-title {
+            color: var(--color-primary);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* Payment Container */
+        .payment-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .payment-methods, .order-summary {
+            background: var(--color-light);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+        
+        .section-title {
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-accent);
+            font-size: 1.3rem;
+        }
+        
+        .payment-option {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .payment-option:hover {
+            border-color: var(--color-secondary);
+            box-shadow: 0 2px 8px rgba(69, 122, 0, 0.2);
+        }
+        
+        .payment-option.active {
+            border-color: var(--color-secondary);
+            background-color: rgba(69, 122, 0, 0.05);
+        }
+        
+        .payment-icon {
+            font-size: 1.5rem;
+            margin-right: 0.8rem;
+        }
+        
+        .payment-details {
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .payment-details.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--color-dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 2px rgba(69, 122, 0, 0.2);
+        }
+        
+        .form-control.error {
+            border-color: var(--color-danger);
+        }
+        
+        .error-message {
+            color: var(--color-danger);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .card-input-group {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+        
+        .order-items {
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding-top: 1rem;
+            margin-top: 1rem;
+            border-top: 2px solid var(--color-accent);
+            color: var(--color-primary);
+        }
+        
+        .payment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--color-primary);
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d4f1a6;
+        }
+        
+        .alert {
+            padding: 0.8rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        
+        .alert.error {
+            background-color: rgba(220, 53, 69, 0.1);
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+            display: block;
+        }
+        
+        .alert.success {
+            background-color: rgba(40, 167, 69, 0.1);
+            border: 1px solid var(--color-success);
+            color: var(--color-success);
+            display: block;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            padding: 2rem 2rem 1rem;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+            font-size: 1.1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .payment-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .card-input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-actions {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo-container">
+            <img src="logo.png" alt="ParchApp" class="logo">
+        </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#destinos">Destinos</a></li>
+                <li><a href="historial.html">Mi Historial</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Pasarela de Pagos</h1>
+            <p class="page-subtitle">Completa tu reserva de forma segura</p>
+        </div>
+        
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+        
+        <div class="payment-container">
+            <!-- Payment Methods -->
+            <div class="payment-methods">
+                <h2 class="section-title">Métodos de Pago</h2>
+                
+                <!-- Credit Card Option -->
+                <div class="payment-option active" id="creditCardOption">
+                    <div class="d-flex align-items-center">
+                        <span class="payment-icon">💳</span>
+                        <div>
+                            <h4>Tarjeta de Crédito/Débito</h4>
+                            <p class="mb-0">Pago seguro con tarjeta</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-details active" id="creditCardDetails">
+                        <form id="creditCardForm">
+                            <div class="form-group">
+                                <label class="form-label" for="cardType">Tipo de Tarjeta</label>
+                                <select class="form-control" id="cardType" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="Visa">Visa</option>
+                                    <option value="Mastercard">Mastercard</option>
+                                    <option value="American Express">American Express</option>
+                                </select>
+                                <div class="error-message" id="cardTypeError">Selecciona un tipo de tarjeta</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="cardNumber">Número de Tarjeta</label>
+                                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                <div class="error-message" id="cardNumberError">Ingresa un número de tarjeta válido</div>
+                            </div>
+                            
+                            <div class="card-input-group">
+                                <div class="form-group">
+                                    <label class="form-label" for="expiryDate">Fecha de Vencimiento</label>
+                                    <input type="month" class="form-control" id="expiryDate" required>
+                                    <div class="error-message" id="expiryDateError">Selecciona una fecha válida</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="cvv">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" placeholder="123" maxlength="4" required>
+                                    <div class="error-message" id="cvvError">Ingresa un CVV válido</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="cardHolder">Nombre del Titular</label>
+                                <input type="text" class="form-control" id="cardHolder" placeholder="Como aparece en la tarjeta" required>
+                                <div class="error-message" id="cardHolderError">Ingresa el nombre del titular</div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Bank Payment Option -->
+                <div class="payment-option" id="bankPaymentOption">
+                    <div class="d-flex align-items-center">
+                        <span class="payment-icon">🏦</span>
+                        <div>
+                            <h4>Pago en Bancos</h4>
+                            <p class="mb-0">Paga en sucursales bancarias</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-details" id="bankPaymentDetails">
+                        <div class="form-group">
+                            <label class="form-label" for="bankPaymentSelect">Selecciona tu Banco</label>
+                            <select class="form-control" id="bankPaymentSelect">
+                                <option value="">Selecciona tu banco</option>
+                                <option value="Bancolombia">Bancolombia</option>
+                                <option value="Davivienda">Davivienda</option>
+                                <option value="BancoBogota">Banco de Bogotá</option>
+                                <option value="BancoPopular">Banco Popular</option>
+                            </select>
+                        </div>
+                        <p class="text-muted small">Recibirás un código de referencia para realizar el pago en cualquier sucursal del banco seleccionado.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2 class="section-title">Resumen de tu Orden</h2>
+                
+                <div class="order-items" id="orderItems">
+                    <!-- Los items se cargarán dinámicamente desde el carrito -->
+                </div>
+                
+                <div class="order-total">
+                    <span>Total a Pagar:</span>
+                    <span id="totalAmount">$0</span>
+                </div>
+                
+                <div class="payment-actions">
+                    <button class="btn btn-secondary" onclick="window.history.back()">Volver al Carrito</button>
+                    <button class="btn btn-primary" id="payButton">Proceder al Pago</button>
+                </div>
+                
+                <div class="mt-4">
+                    <p class="text-muted small">
+                        <span class="text-success">✓</span> Pago 100% seguro con encriptación SSL<br>
+                        <span class="text-success">✓</span> No almacenamos datos de tu tarjeta<br>
+                        <span class="text-success">✓</span> Garantía de reembolso según políticas
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#destinos">Destinos</a></li>
+                    <li><a href="historial.html">Mi Historial</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Datos de ejemplo del carrito
+        const cartData = JSON.parse(localStorage.getItem('parchapp_cart')) || {};
+        const toursData = {
+            "guatape": { name: "Guatapé - Tour Completo", price: 120000 },
+            "jardin": { name: "Jardín - Experiencia Cafetera", price: 150000 },
+            "santa-fe": { name: "Santa Fe de Antioquia", price: 100000 },
+            "medellin": { name: "Medellín - Tour Ciudad", price: 90000 },
+            "parque-arvi": { name: "Parque Arví", price: 80000 },
+            "rio-claro": { name: "Río Claro - Aventura", price: 180000 }
+        };
+
+        // Elementos del DOM
+        const orderItemsContainer = document.getElementById('orderItems');
+        const totalAmountElement = document.getElementById('totalAmount');
+        const payButton = document.getElementById('payButton');
+        const alertContainer = document.getElementById('alertContainer');
+        const cartCount = document.getElementById('cartCount');
+        
+        // Elementos de opciones de pago
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const creditCardForm = document.getElementById('creditCardForm');
+        const cardNumberInput = document.getElementById('cardNumber');
+
+        // Función para formatear precio
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Función para mostrar alertas
+        function showAlert(message, type) {
+            alertContainer.innerHTML = `<div class="alert ${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Función para cargar los items del carrito
+        function loadCartItems() {
+            orderItemsContainer.innerHTML = '';
+            let total = 0;
+            let totalItems = 0;
+
+            Object.keys(cartData).forEach(tourId => {
+                const tour = toursData[tourId];
+                if (tour) {
+                    const quantity = cartData[tourId];
+                    const itemTotal = tour.price * quantity;
+                    total += itemTotal;
+                    totalItems += quantity;
+
+                    const orderItem = document.createElement('div');
+                    orderItem.className = 'order-item';
+                    orderItem.innerHTML = `
+                        <div>
+                            <div class="fw-bold">${tour.name}</div>
+                            <div class="text-muted small">Cantidad: ${quantity}</div>
+                        </div>
+                        <div class="fw-bold">${formatPrice(itemTotal)}</div>
+                    `;
+                    orderItemsContainer.appendChild(orderItem);
+                }
+            });
+
+            totalAmountElement.textContent = formatPrice(total);
+            cartCount.textContent = totalItems;
+
+            // Si el carrito está vacío, mostrar mensaje
+            if (Object.keys(cartData).length === 0) {
+                orderItemsContainer.innerHTML = '<p class="text-muted text-center">Tu carrito está vacío</p>';
+                payButton.disabled = true;
+            } else {
+                payButton.disabled = false;
+            }
+        }
+
+        // Función para validar tarjeta de crédito
+        function validateCreditCard() {
+            let isValid = true;
+            
+            // Validar tipo de tarjeta
+            const cardType = document.getElementById('cardType').value;
+            if (!cardType) {
+                document.getElementById('cardTypeError').classList.add('show');
+                document.getElementById('cardType').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('cardTypeError').classList.remove('show');
+                document.getElementById('cardType').classList.remove('error');
+            }
+            
+            // Validar número de tarjeta
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            let cardNumberValid = false;
+            
+            if (cardType === 'Visa' || cardType === 'Mastercard') {
+                cardNumberValid = /^\d{16}$/.test(cardNumber);
+            } else if (cardType === 'American Express') {
+                cardNumberValid = /^\d{15}$/.test(cardNumber);
+            }
+            
+            if (!cardNumberValid) {
+                document.getElementById('cardNumberError').classList.add('show');
+                document.getElementById('cardNumber').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('cardNumberError').classList.remove('show');
+                document.getElementById('cardNumber').classList.remove('error');
+            }
+            
+            // Validar fecha de vencimiento
+            const expiryDate = document.getElementById('expiryDate').value;
+            const currentDate = new Date();
+            const selectedDate = new Date(expiryDate);
+            
+            if (!expiryDate || selectedDate <= currentDate) {
+                document.getElementById('expiryDateError').classList.add('show');
+                document.getElementById('expiryDate').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('expiryDateError').classList.remove('show');
+                document.getElementById('expiryDate').classList.remove('error');
+            }
+            
+            // Validar CVV
+            const cvv = document.getElementById('cvv').value;
+            let cvvValid = false;
+            
+            if (cardType === 'American Express') {
+                cvvValid = /^\d{4}$/.test(cvv);
+            } else {
+                cvvValid = /^\d{3}$/.test(cvv);
+            }
+            
+            if (!cvvValid) {
+                document.getElementById('cvvError').classList.add('show');
+                document.getElementById('cvv').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('cvvError').classList.remove('show');
+                document.getElementById('cvv').classList.remove('error');
+            }
+            
+            // Validar titular
+            const cardHolder = document.getElementById('cardHolder').value.trim();
+            if (!cardHolder) {
+                document.getElementById('cardHolderError').classList.add('show');
+                document.getElementById('cardHolder').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('cardHolderError').classList.remove('show');
+                document.getElementById('cardHolder').classList.remove('error');
+            }
+            
+            return isValid;
+        }
+
+        // Función para procesar el pago
+        function processPayment() {
+            const activePaymentOption = document.querySelector('.payment-option.active').id;
+            
+            if (activePaymentOption === 'creditCardOption') {
+                if (!validateCreditCard()) {
+                    showAlert('Por favor corrige los errores en el formulario', 'error');
+                    return;
+                }
+                
+                // Simular procesamiento de pago
+                showAlert('Procesando tu pago con tarjeta...', 'success');
+                payButton.textContent = 'Procesando...';
+                payButton.disabled = true;
+                
+                setTimeout(() => {
+                    // Guardar datos del pago
+                    const paymentData = {
+                        method: 'credit_card',
+                        cardType: document.getElementById('cardType').value,
+                        lastFour: document.getElementById('cardNumber').value.slice(-4),
+                        amount: totalAmountElement.textContent,
+                        timestamp: new Date().toISOString(),
+                        items: cartData
+                    };
+                    
+                    localStorage.setItem('parchapp_payment', JSON.stringify(paymentData));
+                    
+                    // Limpiar carrito
+                    localStorage.removeItem('parchapp_cart');
+                    
+                    // Redirigir a página de éxito
+                    window.location.href = 'pagoexitoso.html';
+                }, 2000);
+                
+            } else if (activePaymentOption === 'bankPaymentOption') {
+                const bank = document.getElementById('bankPaymentSelect').value;
+                if (!bank) {
+                    showAlert('Por favor selecciona un banco', 'error');
+                    return;
+                }
+                
+                // Generar código de referencia
+                const referenceCode = 'PARCH' + Date.now().toString().slice(-8);
+                showAlert(`Tu código de referencia es: ${referenceCode}. Preséntalo en cualquier sucursal de ${bank}`, 'success');
+                
+                setTimeout(() => {
+                    const paymentData = {
+                        method: 'bank_payment',
+                        bank: bank,
+                        referenceCode: referenceCode,
+                        amount: totalAmountElement.textContent,
+                        timestamp: new Date().toISOString(),
+                        items: cartData
+                    };
+                    
+                    localStorage.setItem('parchapp_payment', JSON.stringify(paymentData));
+                    localStorage.removeItem('parchapp_cart');
+                    
+                    // Redirigir a página de éxito
+                    window.location.href = 'pagoexitoso.html';
+                }, 2000);
+            }
+        }
+
+        // Formatear número de tarjeta
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            
+            if (value.length > 0) {
+                value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+            }
+            
+            e.target.value = value;
+        });
+
+        // Cambiar entre opciones de pago
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remover clase active de todas las opciones
+                paymentOptions.forEach(opt => {
+                    opt.classList.remove('active');
+                    const details = opt.querySelector('.payment-details');
+                    if (details) details.classList.remove('active');
+                });
+                
+                // Agregar clase active a la opción seleccionada
+                this.classList.add('active');
+                const details = this.querySelector('.payment-details');
+                if (details) details.classList.add('active');
+            });
+        });
+
+        // Event listener para el botón de pago
+        payButton.addEventListener('click', processPayment);
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCartItems();
+        });
+    </script>
+</body>
+</html>

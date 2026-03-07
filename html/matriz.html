@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matriz PEYEA - Cementos Argos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .matrix-container {
+            position: relative;
+            height: 500px;
+            margin: 20px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+        
+        #spaceCanvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .coordinates {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .interpretation {
+            background: #e8f5e8;
+            border-left: 5px solid #27ae60;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MATRIZ PEYEA - CEMENTOS ARGOS</h1>
+            <h2>Análisis Estratégico de Posicionamiento</h2>
+        </div>
+        
+        <div class="coordinates">
+            <h3>COORDENADAS ESTRATÉGICAS</h3>
+            <div style="display: flex; justify-content: center; gap: 30px; font-size: 1.1em;">
+                <div><strong>Eje X (Interno):</strong> +1.0</div>
+                <div><strong>Eje Y (Externo):</strong> +1.0</div>
+            </div>
+        </div>
+        
+        <div class="matrix-container">
+            <canvas id="spaceCanvas"></canvas>
+        </div>
+        
+        <div class="interpretation">
+            <h3>🔍 INTERPRETACIÓN ESTRATÉGICA - CUADRANTE COMPETITIVO-AGRESIVO</h3>
+            <p><strong>Estrategia Recomendada:</strong> Crecimiento selectivo con enfoque en ventajas competitivas</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #3498db;">
+                    <strong>✅ Fortalezas:</strong> Liderazgo en cementos verdes, Margen EBITDA 63.97%
+                </div>
+                <div style="background: white; padding: 12px; border-radius: 6px; border-left: 4px solid #e74c3c;">
+                    <strong>⚠️ Debilidades:</strong> Baja liquidez (razón corriente 0.46)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Crear el canvas y contexto
+        const canvas = document.getElementById('spaceCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Configurar tamaño del canvas
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const scale = Math.min(width, height) / 12;
+        
+        // Función para dibujar la matriz
+        function drawMatrix() {
+            // Limpiar canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Dibujar cuadrantes con colores
+            // Cuadrante Agresivo (superior derecho)
+            ctx.fillStyle = 'rgba(46, 204, 113, 0.2)';
+            ctx.fillRect(centerX, 0, width - centerX, centerY);
+            
+            // Cuadrante Competitivo (superior izquierdo)
+            ctx.fillStyle = 'rgba(241, 196, 15, 0.2)';
+            ctx.fillRect(0, 0, centerX, centerY);
+            
+            // Cuadrante Conservador (inferior izquierdo)
+            ctx.fillStyle = 'rgba(230, 126, 34, 0.2)';
+            ctx.fillRect(0, centerY, centerX, height - centerY);
+            
+            // Cuadrante Defensivo (inferior derecho)
+            ctx.fillStyle = 'rgba(231, 76, 60, 0.2)';
+            ctx.fillRect(centerX, centerY, width - centerX, height - centerY);
+            
+            // Dibujar ejes
+            ctx.strokeStyle = '#2c3e50';
+            ctx.lineWidth = 2;
+            
+            // Eje Y
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, height);
+            ctx.stroke();
+            
+            // Eje X
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.stroke();
+            
+            // Dibujar punto de Cementos Argos en (1, 1)
+            const pointX = centerX + (1 * scale);
+            const pointY = centerY - (1 * scale); // Invertir Y porque el canvas empieza desde arriba
+            
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(pointX, pointY, 10, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.strokeStyle = '#c0392b';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Etiqueta del punto
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('Cementos Argos', pointX + 15, pointY - 15);
+            
+            // Etiquetas de cuadrantes
+            ctx.font = 'bold 16px Arial';
+            
+            // Agresivo
+            ctx.fillStyle = '#27ae60';
+            ctx.fillText('AGRESIVO', centerX + 20, 30);
+            
+            // Competitivo
+            ctx.fillStyle = '#f39c12';
+            ctx.fillText('COMPETITIVO', centerX - 120, 30);
+            
+            // Conservador
+            ctx.fillStyle = '#e67e22';
+            ctx.fillText('CONSERVADOR', centerX - 120, height - 20);
+            
+            // Defensivo
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillText('DEFENSIVO', centerX + 20, height - 20);
+            
+            // Etiquetas de ejes
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('POSICIÓN FINANCIERA INTERNA', width - 200, centerY + 30);
+            ctx.save();
+            ctx.translate(30, centerY);
+            ctx.rotate(-Math.PI/2);
+            ctx.fillText('POSICIÓN DEL ENTORNO EXTERNO', 0, 0);
+            ctx.restore();
+            
+            // Marcas en los ejes
+            ctx.font = '12px Arial';
+            ctx.fillStyle = '#7f8c8d';
+            
+            // Marcas en eje X
+            for (let i = -5; i <= 5; i++) {
+                if (i === 0) continue;
+                const x = centerX + (i * scale);
+                ctx.beginPath();
+                ctx.moveTo(x, centerY - 5);
+                ctx.lineTo(x, centerY + 5);
+                ctx.stroke();
+                ctx.fillText(i, x - 5, centerY + 20);
+            }
+            
+            // Marcas en eje Y
+            for (let i = -5; i <= 5; i++) {
+                if (i === 0) continue;
+                const y = centerY - (i * scale);
+                ctx.beginPath();
+                ctx.moveTo(centerX - 5, y);
+                ctx.lineTo(centerX + 5, y);
+                ctx.stroke();
+                ctx.fillText(i, centerX - 25, y + 5);
+            }
+            
+            // Origen
+            ctx.fillText('0', centerX - 10, centerY + 20);
+        }
+        
+        // Dibujar la matriz cuando se carga la página
+        window.addEventListener('load', drawMatrix);
+        window.addEventListener('resize', function() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            drawMatrix();
+        });
+        
+        // Dibujar inicialmente
+        drawMatrix();
+    </script>
+</body>
+</html>

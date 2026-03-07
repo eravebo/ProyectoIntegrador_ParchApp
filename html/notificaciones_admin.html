@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - ParchApp Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           VARIABLES Y RESET
+           ============================================ */
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+            --color-beige: #f9f9f9;
+            --color-border: #ddd;
+            --color-error: #d32f2f;
+            --color-success: #388e3c;
+            --color-warning: #f57c00;
+            --color-info: #1976d2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--color-beige);
+            color: var(--color-dark);
+            line-height: 1.6;
+        }
+        
+        /* ============================================
+           HEADER
+           ============================================ */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            padding: 0.5rem 0;
+        }
+        
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+        
+        /* ============================================
+           MAIN CONTAINER
+           ============================================ */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        /* ============================================
+           MODULE SECTIONS
+           ============================================ */
+        .module-section {
+            background-color: var(--color-light);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: var(--color-primary);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .module-section h2 {
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        /* ============================================
+           REQUESTS CONTAINER
+           ============================================ */
+        .requests-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            background-color: var(--color-light);
+            transition: all 0.3s;
+        }
+        
+        .request-item:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-secondary);
+        }
+        
+        .request-info h3 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .request-info p {
+            margin-bottom: 0.3rem;
+            color: #666;
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* ============================================
+           ALERTS CONTAINER
+           ============================================ */
+        .alerts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .alert-item.warning {
+            background-color: rgba(255, 152, 0, 0.1);
+            border-left-color: var(--color-warning);
+        }
+        
+        .alert-item.info {
+            background-color: rgba(33, 150, 243, 0.1);
+            border-left-color: var(--color-info);
+        }
+        
+        .alert-icon {
+            font-size: 1.5rem;
+            margin-top: 0.2rem;
+        }
+        
+        .alert-content h3 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-content p {
+            color: #666;
+        }
+        
+        /* ============================================
+           BUTTONS
+           ============================================ */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--color-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: #ffffff;
+            border: 2px solid var(--color-border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-success {
+            background-color: var(--color-success);
+            color: var(--color-light);
+        }
+        
+        .btn-danger {
+            background-color: var(--color-error);
+            color: var(--color-light);
+        }
+        
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .module-section {
+                padding: 1.5rem;
+            }
+            
+            .request-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .request-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="../imagenes/logo.png" alt="ParchApp" class="logo">
+        </div>
+        <div class="admin-nav">
+            <a href="admin.html" class="btn btn-secondary">← Volver al Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="section-title">Notificaciones y Solicitudes</h1>
+        
+        <!-- Solicitudes de Agencias -->
+        <div class="module-section">
+            <h2>Solicitudes de Publicación Pendientes</h2>
+            <div id="agencyRequests" class="requests-container">
+                <!-- Las solicitudes se cargarán dinámicamente aquí -->
+            </div>
+        </div>
+
+        <!-- Alertas del Sistema -->
+        <div class="module-section">
+            <h2>Alertas del Sistema</h2>
+            <div class="alerts-container">
+                <div class="alert-item warning">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <h3>Planes con baja disponibilidad</h3>
+                        <p>3 planes tienen menos de 5 cupos disponibles</p>
+                    </div>
+                </div>
+                <div class="alert-item info">
+                    <div class="alert-icon">ℹ️</div>
+                    <div class="alert-content">
+                        <h3>Actualización del sistema</h3>
+                        <p>Próxima mantenimiento programado para el fin de semana</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para solicitudes pendientes
+        const agencyRequests = [
+            { 
+                id: 1, 
+                agency: "EcoTours Colombia", 
+                plan: "Tour Sostenible Antioquia", 
+                value: 125000, 
+                category: "cultural",
+                date: "2024-01-15",
+                contact: "Carlos Mendoza",
+                email: "carlos@ecotours.com"
+            },
+            { 
+                id: 2, 
+                agency: "Aventura Total", 
+                plan: "Expedición Selva Tropical", 
+                value: 220000, 
+                category: "aventura",
+                date: "2024-01-16",
+                contact: "Ana Rodríguez",
+                email: "ana@aventuratotal.com"
+            },
+            { 
+                id: 3, 
+                agency: "Playa Paradise", 
+                plan: "Escapada a Nuquí", 
+                value: 350000, 
+                category: "playa",
+                date: "2024-01-17",
+                contact: "Miguel Torres",
+                email: "miguel@playaparadise.com"
+            }
+        ];
+
+        // Función para formatear precio
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Función para mostrar solicitudes pendientes
+        function displayAgencyRequests() {
+            const container = document.getElementById('agencyRequests');
+            
+            if (agencyRequests.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <p>No hay solicitudes pendientes en este momento</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            agencyRequests.forEach(request => {
+                const requestItem = document.createElement('div');
+                requestItem.className = 'request-item';
+                requestItem.innerHTML = `
+                    <div class="request-info">
+                        <h3>${request.agency}</h3>
+                        <p><strong>Plan:</strong> ${request.plan}</p>
+                        <p><strong>Valor:</strong> ${formatPrice(request.value)}</p>
+                        <p><strong>Categoría:</strong> ${request.category}</p>
+                        <p><strong>Contacto:</strong> ${request.contact} (${request.email})</p>
+                        <p><strong>Fecha de solicitud:</strong> ${request.date}</p>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-success btn-small" onclick="approveRequest(${request.id})">
+                            Aprobar
+                        </button>
+                        <button class="btn btn-danger btn-small" onclick="rejectRequest(${request.id})">
+                            Rechazar
+                        </button>
+                    </div>
+                `;
+                container.appendChild(requestItem);
+            });
+        }
+
+        // Función para aprobar solicitud
+        function approveRequest(requestId) {
+            const request = agencyRequests.find(r => r.id === requestId);
+            if (request) {
+                if (confirm(`¿Estás seguro de que deseas aprobar la solicitud de "${request.agency}"?`)) {
+                    // Aquí iría la lógica para aprobar la solicitud
+                    alert(`Solicitud de ${request.agency} aprobada exitosamente`);
+                    
+                    // Eliminar la solicitud de la lista (simulación)
+                    const index = agencyRequests.findIndex(r => r.id === requestId);
+                    if (index !== -1) {
+                        agencyRequests.splice(index, 1);
+                        displayAgencyRequests();
+                    }
+                }
+            }
+        }
+
+        // Función para rechazar solicitud
+        function rejectRequest(requestId) {
+            const request = agencyRequests.find(r => r.id === requestId);
+            if (request) {
+                if (confirm(`¿Estás seguro de que deseas rechazar la solicitud de "${request.agency}"?`)) {
+                    // Aquí iría la lógica para rechazar la solicitud
+                    alert(`Solicitud de ${request.agency} rechazada`);
+                    
+                    // Eliminar la solicitud de la lista (simulación)
+                    const index = agencyRequests.findIndex(r => r.id === requestId);
+                    if (index !== -1) {
+                        agencyRequests.splice(index, 1);
+                        displayAgencyRequests();
+                    }
+                }
+            }
+        }
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            displayAgencyRequests();
+        });
+    </script>
+</body>
+</html>
